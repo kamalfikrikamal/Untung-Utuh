@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# docker-compose.yml — DEVELOPMENT
+# Hot reload, source volumes, debug ports, no auth on Mongo
+# Usage: docker compose up --build
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mern_mongo_dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_dev_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mernapp
+    networks:
+      - mern_dev
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: mern_backend_dev
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "5001:5001"
+      - "9229:9229"   # Node.js debugger
+    volumes:
+      - ./backend:/app
+      - /app/node_modules   # Anonymous volume to preserve installed modules
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: development
+      MONGODB_URI: mongodb://mongo:27017/mernapp
+    networks:
+      - mern_dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: mern_frontend_dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules   # Anonymous volume to preserve installed modules
+    env_file:
+      - ./frontend/.env
+    environment:
+      VITE_API_URL: http://localhost:5001/api
+    networks:
+      - mern_dev
+
+volumes:
+  mongo_dev_data:
+
+networks:
+  mern_dev:
+    driver: bridge

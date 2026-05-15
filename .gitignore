@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .gitignore — MERN Stack
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Environment files — NEVER commit
+.env
+.env.local
+.env.staging
+.env.production
+.env.*.local
+backend/.env
+backend/.env.staging
+backend/.env.production
+frontend/.env
+frontend/.env.staging
+frontend/.env.production
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+frontend/dist/
+backend/dist/
+*.tgz
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+*/coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Docker override (local dev customizations)
+docker-compose.override.yml

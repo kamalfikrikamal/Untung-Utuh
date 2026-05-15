@@ -1,0 +1,95 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# docker-compose.staging.yml — STAGING
+# Production-like build, auth-enabled Mongo, Nginx reverse proxy
+# Usage: docker compose -f docker-compose.staging.yml up --build
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mern_mongo_stag
+    restart: unless-stopped
+    volumes:
+      - mongo_stag_data:/data/db
+      - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?MONGO_ROOT_PASSWORD is required}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-mernapp_stag}
+      MONGO_APP_USER: ${MONGO_APP_USER:-mernapp_user}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?MONGO_APP_PASSWORD is required}
+    expose:
+      - "27017"
+    networks:
+      - mern_stag
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mern_backend_stag
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    expose:
+      - "5001"
+    env_file:
+      - ./backend/.env.staging
+    environment:
+      NODE_ENV: staging
+      MONGODB_URI: mongodb://${MONGO_APP_USER:-mernapp_user}:${MONGO_APP_PASSWORD}@mongo:27017/${MONGO_DB:-mernapp_stag}?authSource=${MONGO_DB:-mernapp_stag}
+    networks:
+      - mern_stag
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost/api}
+        VITE_APP_NAME: ${VITE_APP_NAME:-MERN App (Staging)}
+        VITE_APP_URL: ${VITE_APP_URL:-http://localhost}
+    container_name: mern_frontend_stag
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      - mern_stag
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: mern_nginx_stag
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - mern_stag
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mongo_stag_data:
+
+networks:
+  mern_stag:
+    driver: bridge
