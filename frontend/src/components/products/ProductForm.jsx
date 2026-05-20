@@ -201,9 +201,8 @@ export default function ProductForm({ initial, onSubmit, loading }) {
         </label>
 
         {allPreviews.length < 10 && (
-          <div
-            role="button"
-            tabIndex={0}
+          <button
+            type="button"
             onDragOver={(e) => {
               e.preventDefault();
               setDragOver(true);
@@ -211,14 +210,8 @@ export default function ProductForm({ initial, onSubmit, loading }) {
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                fileInputRef.current?.click();
-              }
-            }}
             aria-label="Upload product images"
-            className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-colors ${
+            className={`w-full border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-colors ${
               dragOver
                 ? 'border-blue-500 bg-blue-500/10'
                 : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/50'
@@ -239,7 +232,7 @@ export default function ProductForm({ initial, onSubmit, loading }) {
             <p className="text-slate-600 text-xs mt-1">
               JPG, PNG, WebP, GIF · max 5 MB each · up to 10 images
             </p>
-          </div>
+          </button>
         )}
 
         {/* Previews */}
