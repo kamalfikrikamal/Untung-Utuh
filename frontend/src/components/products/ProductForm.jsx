@@ -93,6 +93,16 @@ export default function ProductForm({ initial, onSubmit, loading }) {
   ];
   const serverCount = serverImages.length;
 
+  // eslint-disable-next-line no-nested-ternary
+  let submitLabel;
+  if (uploading) {
+    submitLabel = 'Uploading images…';
+  } else if (loading) {
+    submitLabel = 'Saving…';
+  } else {
+    submitLabel = 'Save Product';
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name */}
@@ -236,7 +246,7 @@ export default function ProductForm({ initial, onSubmit, loading }) {
         {allPreviews.length > 0 && (
           <div className="grid grid-cols-4 gap-2 mt-3">
             {allPreviews.map((img, idx) => (
-              <div key={idx} className="relative group aspect-square">
+              <div key={img.url} className="relative group aspect-square">
                 <img
                   src={img.url}
                   alt=""
@@ -264,7 +274,7 @@ export default function ProductForm({ initial, onSubmit, loading }) {
         disabled={loading || uploading}
         className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-lg transition-colors"
       >
-        {uploading ? 'Uploading images…' : loading ? 'Saving…' : 'Save Product'}
+        {submitLabel}
       </button>
     </form>
   );
