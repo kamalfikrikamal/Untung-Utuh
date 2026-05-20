@@ -10,7 +10,7 @@ export function useInstallPrompt() {
 
   useEffect(() => {
     // Already installed (running in standalone mode)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (globalThis.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
       return;
     }
@@ -24,11 +24,11 @@ export function useInstallPrompt() {
       setDeferredPrompt(null);
     };
 
-    window.addEventListener('beforeinstallprompt', onPrompt);
-    window.addEventListener('appinstalled', onInstalled);
+    globalThis.addEventListener('beforeinstallprompt', onPrompt);
+    globalThis.addEventListener('appinstalled', onInstalled);
     return () => {
-      window.removeEventListener('beforeinstallprompt', onPrompt);
-      window.removeEventListener('appinstalled', onInstalled);
+      globalThis.removeEventListener('beforeinstallprompt', onPrompt);
+      globalThis.removeEventListener('appinstalled', onInstalled);
     };
   }, []);
 
