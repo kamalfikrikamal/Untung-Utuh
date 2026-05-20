@@ -96,10 +96,11 @@ export default function ProductForm({ initial, onSubmit, loading }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name */}
       <div>
-        <label className="block text-sm text-slate-400 mb-1">
+        <label htmlFor="product-name" className="block text-sm text-slate-400 mb-1">
           Product Name <span className="text-red-400">*</span>
         </label>
         <input
+          id="product-name"
           value={form.name}
           onChange={set('name')}
           required
@@ -111,8 +112,9 @@ export default function ProductForm({ initial, onSubmit, loading }) {
 
       {/* Description */}
       <div>
-        <label className="block text-sm text-slate-400 mb-1">Description</label>
+        <label htmlFor="product-description" className="block text-sm text-slate-400 mb-1">Description</label>
         <textarea
+          id="product-description"
           value={form.description}
           onChange={set('description')}
           rows={3}
@@ -125,10 +127,11 @@ export default function ProductForm({ initial, onSubmit, loading }) {
       {/* Price & Stock */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-slate-400 mb-1">
+          <label htmlFor="product-price" className="block text-sm text-slate-400 mb-1">
             Price (IDR) <span className="text-red-400">*</span>
           </label>
           <input
+            id="product-price"
             type="number"
             value={form.price}
             onChange={set('price')}
@@ -139,10 +142,11 @@ export default function ProductForm({ initial, onSubmit, loading }) {
           />
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1">
+          <label htmlFor="product-stock" className="block text-sm text-slate-400 mb-1">
             Stock <span className="text-red-400">*</span>
           </label>
           <input
+            id="product-stock"
             type="number"
             value={form.stock}
             onChange={set('stock')}
@@ -157,10 +161,11 @@ export default function ProductForm({ initial, onSubmit, loading }) {
 
       {/* Category */}
       <div>
-        <label className="block text-sm text-slate-400 mb-1">
+        <label htmlFor="product-category" className="block text-sm text-slate-400 mb-1">
           Category <span className="text-red-400">*</span>
         </label>
         <select
+          id="product-category"
           value={form.category}
           onChange={set('category')}
           required
@@ -186,6 +191,8 @@ export default function ProductForm({ initial, onSubmit, loading }) {
 
         {allPreviews.length < 10 && (
           <div
+            role="button"
+            tabIndex={0}
             onDragOver={(e) => {
               e.preventDefault();
               setDragOver(true);
@@ -193,6 +200,13 @@ export default function ProductForm({ initial, onSubmit, loading }) {
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+            aria-label="Upload product images"
             className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-colors ${
               dragOver
                 ? 'border-blue-500 bg-blue-500/10'
