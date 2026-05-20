@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 import { trackEvent } from '@/services/analyticsService';
 
@@ -32,7 +33,7 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
     const text = encodeURIComponent(
       `Halo, saya ingin memesan:\n\n*${name}*\nJumlah: ${qty}\nTotal: ${formatCurrency(total)}\n\nMohon konfirmasinya, terima kasih!`
     );
-    const phone = (whatsapp ?? '').replace(/\D/g, '');
+    const phone = (whatsapp ?? '').replaceAll(/\D/g, '');
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
@@ -133,3 +134,20 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
     </Modal>
   );
 }
+
+ProductDetailModal.propTypes = {
+  product: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    price: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired,
+    category: PropTypes.string,
+    images: PropTypes.arrayOf(
+      PropTypes.shape({ url: PropTypes.string.isRequired })
+    ),
+  }),
+  onClose: PropTypes.func.isRequired,
+  whatsapp: PropTypes.string,
+  storeId: PropTypes.string,
+};
