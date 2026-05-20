@@ -16,35 +16,35 @@ const queryClient = new QueryClient({
 });
 
 // Register service worker in production only (avoids HMR conflicts in dev)
+function notifyNewVersion(newWorker) {
+  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+    toast.info('Versi baru tersedia!', {
+      duration: Infinity,
+      action: {
+        label: 'Perbarui',
+        onClick: () => {
+          newWorker.postMessage('SKIP_WAITING');
+          window.location.reload();
+        },
+      },
+    });
+  }
+}
+
+function handleUpdateFound(reg) {
+  const newWorker = reg.installing;
+  newWorker?.addEventListener('statechange', () => notifyNewVersion(newWorker));
+}
+
+function registerServiceWorker() {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then((reg) => reg.addEventListener('updatefound', () => handleUpdateFound(reg)))
+    .catch((err) => console.error('[SW] Registration failed:', err));
+}
+
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((reg) => {
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker?.addEventListener('statechange', () => {
-            if (
-              newWorker.state === 'installed' &&
-              navigator.serviceWorker.controller
-            ) {
-              // A new version is waiting — notify user
-              toast.info('Versi baru tersedia!', {
-                duration: Infinity,
-                action: {
-                  label: 'Perbarui',
-                  onClick: () => {
-                    newWorker.postMessage('SKIP_WAITING');
-                    window.location.reload();
-                  },
-                },
-              });
-            }
-          });
-        });
-      })
-      .catch((err) => console.error('[SW] Registration failed:', err));
-  });
+  window.addEventListener('load', registerServiceWorker);
 }
 
 createRoot(document.getElementById('root')).render(
