@@ -53,7 +53,7 @@ const errorHandler = (err, req, res, _next) => {
   }
 
   // CORS error
-  if (err.message && err.message.startsWith('CORS policy')) {
+  if (err.message?.startsWith('CORS policy')) {
     statusCode = 403;
   }
 
