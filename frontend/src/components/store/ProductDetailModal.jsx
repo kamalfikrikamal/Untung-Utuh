@@ -59,7 +59,7 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
             <div className="flex gap-2 overflow-x-auto pb-1">
               {images.map((img, i) => (
                 <button
-                  key={i}
+                  key={img.url}
                   onClick={() => setActiveImg(i)}
                   className={`w-14 h-14 shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
                     i === activeImg ? 'border-blue-500' : 'border-slate-600 hover:border-slate-500'
