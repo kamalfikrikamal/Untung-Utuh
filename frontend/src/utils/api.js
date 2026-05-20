@@ -26,7 +26,7 @@ api.interceptors.response.use(
     const status = error.response?.status;
     if (status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      globalThis.location.href = '/login';
     } else if (status >= 500) {
       toast.error('A server error occurred. Please try again.');
     }
