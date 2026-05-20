@@ -1,6 +1,6 @@
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
-const path = require('path');
+const path = require('node:path');
 
 const { combine, timestamp, errors, json, colorize, printf } = winston.format;
 
@@ -9,9 +9,11 @@ const devFormat = combine(
   timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   errors({ stack: true }),
   printf(({ level, message, timestamp: ts, stack }) => {
+    const time = String(ts);
+    const msg = String(message);
     return stack
-      ? `${ts} [${level}]: ${message}\n${stack}`
-      : `${ts} [${level}]: ${message}`;
+      ? `${time} [${level}]: ${msg}\n${String(stack)}`
+      : `${time} [${level}]: ${msg}`;
   })
 );
 
