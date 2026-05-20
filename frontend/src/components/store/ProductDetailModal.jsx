@@ -91,9 +91,9 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
           {stock > 0 && (
             <>
               {/* Quantity selector */}
-              <div>
-                <p id="qty-label" className="block text-sm text-slate-400 mb-2">Quantity</p>
-                <div role="group" aria-labelledby="qty-label" className="flex items-center gap-3">
+              <fieldset className="border-0 p-0 m-0">
+                <legend className="block text-sm text-slate-400 mb-2">Quantity</legend>
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     className="w-9 h-9 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors text-lg font-medium"
@@ -108,7 +108,7 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
                     +
                   </button>
                 </div>
-              </div>
+              </fieldset>
 
               <p className="text-sm text-slate-400">
                 Total:{' '}
