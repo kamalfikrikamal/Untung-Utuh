@@ -11,8 +11,9 @@ const devFormat = combine(
   printf(({ level, message, timestamp: ts, stack }) => {
     const time = typeof ts === 'string' ? ts : JSON.stringify(ts);
     const msg = typeof message === 'string' ? message : JSON.stringify(message);
+    const stackStr = typeof stack === 'string' ? stack : JSON.stringify(stack);
     return stack
-      ? `${time} [${level}]: ${msg}\n${typeof stack === 'string' ? stack : JSON.stringify(stack)}`
+      ? `${time} [${level}]: ${msg}\n${stackStr}`
       : `${time} [${level}]: ${msg}`;
   })
 );
