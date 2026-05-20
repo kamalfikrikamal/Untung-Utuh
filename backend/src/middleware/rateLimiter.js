@@ -1,4 +1,4 @@
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -33,7 +33,7 @@ const analyticsLimiter = rateLimit({
   max: process.env.NODE_ENV === 'production' ? 30 : 1000,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => `${req.ip}:${req.body?.storeId || ''}`,
+  keyGenerator: (req) => `${ipKeyGenerator(req)}:${req.body?.storeId || ''}`,
   message: {
     status: 'error',
     message: 'Too many tracking requests, please slow down.',
