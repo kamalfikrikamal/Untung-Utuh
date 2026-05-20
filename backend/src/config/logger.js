@@ -9,10 +9,10 @@ const devFormat = combine(
   timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   errors({ stack: true }),
   printf(({ level, message, timestamp: ts, stack }) => {
-    const time = String(ts);
-    const msg = String(message);
+    const time = typeof ts === 'string' ? ts : JSON.stringify(ts);
+    const msg = typeof message === 'string' ? message : JSON.stringify(message);
     return stack
-      ? `${time} [${level}]: ${msg}\n${String(stack)}`
+      ? `${time} [${level}]: ${msg}\n${typeof stack === 'string' ? stack : JSON.stringify(stack)}`
       : `${time} [${level}]: ${msg}`;
   })
 );
