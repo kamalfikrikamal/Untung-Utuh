@@ -2,6 +2,7 @@
  * SEO component — uses React 19 native document metadata hoisting.
  * Supports Open Graph, Twitter Cards, and canonical URLs for Googlebot crawling.
  */
+import PropTypes from 'prop-types';
 export default function SEO({
   title,
   description = 'A full-stack MERN application',
@@ -39,3 +40,12 @@ export default function SEO({
     </>
   );
 }
+
+SEO.propTypes = {
+  title: PropTypes.string,
+  description: PropTypes.string,
+  image: PropTypes.string,
+  url: PropTypes.string,
+  type: PropTypes.string,
+  noindex: PropTypes.bool,
+};
