@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function StoreHeader({ store }) {
   return (
     <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
@@ -9,7 +11,7 @@ export default function StoreHeader({ store }) {
 
       {store.whatsapp && (
         <a
-          href={`https://wa.me/${store.whatsapp.replace(/\D/g, '')}`}
+          href={`https://wa.me/${store.whatsapp.replaceAll(/\D/g, '')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg transition-colors text-sm font-medium"
@@ -24,3 +26,11 @@ export default function StoreHeader({ store }) {
     </div>
   );
 }
+
+StoreHeader.propTypes = {
+  store: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    whatsapp: PropTypes.string,
+  }).isRequired,
+};
