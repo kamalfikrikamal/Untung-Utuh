@@ -20,6 +20,9 @@ const CATEGORIES = [
   'other',
 ];
 
+const SKELETON_ITEMS = Array.from({ length: 8 }, (_, i) => `skeleton-${i + 1}`);
+const NEXT_SKELETON_ITEMS = Array.from({ length: 4 }, (_, i) => `next-skeleton-${i + 1}`);
+
 export default function StorePage() {
   const { slug } = useParams();
   const [search, setSearch] = useState('');
@@ -93,6 +96,53 @@ export default function StorePage() {
     );
   }
 
+  let productGrid;
+  if (productsLoading) {
+    productGrid = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {SKELETON_ITEMS.map((id) => (
+          <StoreProductCardSkeleton key={id} />
+        ))}
+      </div>
+    );
+  } else if (products.length === 0) {
+    productGrid = (
+      <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-500">
+        <span className="text-4xl">🔍</span>
+        <p>No products found.</p>
+      </div>
+    );
+  } else {
+    productGrid = (
+      <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {products.map((p) => (
+            <StoreProductCard
+              key={p._id}
+              product={p}
+              onClick={() => setSelectedProduct(p)}
+            />
+          ))}
+
+          {/* Skeleton cards appended while loading the next page */}
+          {isFetchingNextPage &&
+            NEXT_SKELETON_ITEMS.map((id) => (
+              <StoreProductCardSkeleton key={id} />
+            ))}
+        </div>
+
+        {/* Invisible sentinel — triggers next page fetch when visible */}
+        <div ref={sentinelRef} aria-hidden="true" className="h-1" />
+
+        {!hasNextPage && products.length > 0 && (
+          <p className="text-center text-slate-600 text-sm pb-4">
+            Semua produk sudah ditampilkan
+          </p>
+        )}
+      </>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <StoreHeader store={store} />
@@ -120,45 +170,7 @@ export default function StorePage() {
       </div>
 
       {/* Product grid */}
-      {productsLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <StoreProductCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : products.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-500">
-          <span className="text-4xl">🔍</span>
-          <p>No products found.</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {products.map((p) => (
-              <StoreProductCard
-                key={p._id}
-                product={p}
-                onClick={() => setSelectedProduct(p)}
-              />
-            ))}
-
-            {/* Skeleton cards appended while loading the next page */}
-            {isFetchingNextPage &&
-              Array.from({ length: 4 }).map((_, i) => (
-                <StoreProductCardSkeleton key={`next-${i}`} />
-              ))}
-          </div>
-
-          {/* Invisible sentinel — triggers next page fetch when visible */}
-          <div ref={sentinelRef} aria-hidden="true" className="h-1" />
-
-          {!hasNextPage && products.length > 0 && (
-            <p className="text-center text-slate-600 text-sm pb-4">
-              Semua produk sudah ditampilkan
-            </p>
-          )}
-        </>
-      )}
+      {productGrid}
 
       {/* Product detail modal */}
       <ProductDetailModal
