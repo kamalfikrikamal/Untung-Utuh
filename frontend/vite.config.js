@@ -50,7 +50,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      exclude: ['node_modules/', 'tests/'],
+      exclude: ['node_modules/', 'tests/', 'src/main.jsx'],
     },
   },
 });
