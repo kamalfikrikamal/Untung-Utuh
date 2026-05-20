@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
 /**
@@ -85,3 +86,10 @@ export default function LazyImage({ src, alt, className = '', imgClassName = '' 
     </div>
   );
 }
+
+LazyImage.propTypes = {
+  src: PropTypes.string,
+  alt: PropTypes.string,
+  className: PropTypes.string,
+  imgClassName: PropTypes.string,
+};
