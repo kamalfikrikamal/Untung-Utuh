@@ -8,7 +8,14 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus';
  */
 function optimizeCloudinaryUrl(url, { isSlowConnection, isMediumConnection }) {
   if (!url?.includes('res.cloudinary.com')) return url;
-  const quality = isSlowConnection ? 'q_30,w_400' : isMediumConnection ? 'q_60,w_800' : 'q_auto:good';
+  let quality;
+  if (isSlowConnection) {
+    quality = 'q_30,w_400';
+  } else if (isMediumConnection) {
+    quality = 'q_60,w_800';
+  } else {
+    quality = 'q_auto:good';
+  }
   const transform = `f_auto,${quality}`;
   // Insert after /upload/, replacing any existing eager transformation block
   const [base, rest] = url.split('/upload/');
