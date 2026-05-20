@@ -24,7 +24,10 @@ const productImageMulter = multer({
 const uploadBufferToCloudinary = (buffer, options) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(options, (err, result) => {
-      if (err) return reject(err instanceof Error ? err : new Error(String(err)));
+      if (err) {
+        const error = err instanceof Error ? err : new Error(String(err));
+        return reject(error);
+      }
       resolve(result);
     });
     stream.end(buffer);
