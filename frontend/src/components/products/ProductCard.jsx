@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import LazyImage from '@/components/ui/LazyImage';
 
 const CATEGORY_COLORS = {
@@ -88,3 +89,18 @@ export default function ProductCard({ product, onEdit, onDelete }) {
     </div>
   );
 }
+
+ProductCard.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired,
+    category: PropTypes.string,
+    isActive: PropTypes.bool,
+    images: PropTypes.arrayOf(
+      PropTypes.shape({ url: PropTypes.string.isRequired })
+    ),
+  }).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
