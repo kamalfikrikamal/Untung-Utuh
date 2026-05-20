@@ -24,7 +24,7 @@ function notifyNewVersion(newWorker) {
         label: 'Perbarui',
         onClick: () => {
           newWorker.postMessage('SKIP_WAITING');
-          window.location.reload();
+            globalThis.location.reload();
         },
       },
     });
@@ -44,7 +44,7 @@ function registerServiceWorker() {
 }
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', registerServiceWorker);
+  globalThis.addEventListener('load', registerServiceWorker);
 }
 
 createRoot(document.getElementById('root')).render(
