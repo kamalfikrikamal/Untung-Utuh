@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Modal from './Modal';
 
 export default function ConfirmDialog({
@@ -31,3 +32,13 @@ export default function ConfirmDialog({
     </Modal>
   );
 }
+
+ConfirmDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  message: PropTypes.string.isRequired,
+  confirmLabel: PropTypes.string,
+  loading: PropTypes.bool,
+};
