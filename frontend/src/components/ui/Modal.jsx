@@ -24,16 +24,14 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
   return createPortal(
     <div
       ref={overlayRef}
-      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 overflow-y-auto"
       onClick={(e) => e.target === overlayRef.current && onClose()}
       onKeyDown={(e) => e.key === 'Escape' && onClose()}
     >
-      <div
-        role="dialog"
-        aria-modal="true"
+      <dialog
+        open
         aria-labelledby={title ? 'modal-title' : undefined}
-        className={`bg-slate-900 rounded-2xl w-full ${SIZES[size]} shadow-2xl border border-slate-700 my-4`}
+        className={`bg-slate-900 rounded-2xl w-full p-0 ${SIZES[size]} shadow-2xl border border-slate-700 my-4`}
       >
         {title && (
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
@@ -48,7 +46,7 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
           </div>
         )}
         <div className="p-6">{children}</div>
-      </div>
+      </dialog>
     </div>,
     document.body
   );
