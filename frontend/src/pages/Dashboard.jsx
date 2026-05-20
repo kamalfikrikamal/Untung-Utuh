@@ -81,7 +81,7 @@ export default function Dashboard() {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors flex items-center gap-2 shrink-0"
         >
           <span className="text-lg leading-none">+</span>
-          Add Product
+          <span>Add Product</span>
         </button>
       </div>
 
