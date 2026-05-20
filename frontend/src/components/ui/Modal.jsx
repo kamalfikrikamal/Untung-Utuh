@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 
@@ -10,8 +10,6 @@ const SIZES = {
 };
 
 export default function Modal({ open, onClose, title, children, size = 'md' }) {
-  const overlayRef = useRef(null);
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => e.key === 'Escape' && onClose();
@@ -22,32 +20,36 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
   if (!open) return null;
 
   return createPortal(
-    <div
-      ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 overflow-y-auto"
-      onClick={(e) => e.target === overlayRef.current && onClose()}
-      onKeyDown={(e) => e.key === 'Escape' && onClose()}
-    >
-      <dialog
-        open
-        aria-labelledby={title ? 'modal-title' : undefined}
-        className={`bg-slate-900 rounded-2xl w-full p-0 ${SIZES[size]} shadow-2xl border border-slate-700 my-4`}
-      >
-        {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
-            <h2 id="modal-title" className="text-lg font-semibold text-white">{title}</h2>
-            <button
-              onClick={onClose}
-              aria-label="Close modal"
-              className="text-slate-400 hover:text-white transition-colors w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700 text-xl leading-none"
-            >
-              ×
-            </button>
-          </div>
-        )}
-        <div className="p-6">{children}</div>
-      </dialog>
-    </div>,
+    <>
+      {/* Backdrop: aria-hidden so screen readers skip it; click closes modal */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-50 bg-black/70"
+        onClick={onClose}
+      />
+      {/* Dialog container: pointer-events-none so clicks pass through to backdrop */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto pointer-events-none">
+        <dialog
+          open
+          aria-labelledby={title ? 'modal-title' : undefined}
+          className={`pointer-events-auto bg-slate-900 rounded-2xl w-full p-0 ${SIZES[size]} shadow-2xl border border-slate-700 my-4`}
+        >
+          {title && (
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+              <h2 id="modal-title" className="text-lg font-semibold text-white">{title}</h2>
+              <button
+                onClick={onClose}
+                aria-label="Close modal"
+                className="text-slate-400 hover:text-white transition-colors w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700 text-xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          <div className="p-6">{children}</div>
+        </dialog>
+      </div>
+    </>,
     document.body
   );
 }
