@@ -1,4 +1,4 @@
-const crypto  = require('crypto');
+const crypto  = require('node:crypto');
 const { Types } = require('mongoose');
 const Analytics = require('../models/Analytics');
 const Store     = require('../models/Store');
