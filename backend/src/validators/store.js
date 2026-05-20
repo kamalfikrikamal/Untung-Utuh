@@ -5,7 +5,7 @@ const createStoreSchema = z.object({
   description: z.string().max(500).trim().nullable().optional(),
   whatsapp: z
     .string()
-    .regex(/^\+?[0-9]{8,15}$/, 'whatsapp must be a valid phone number (8–15 digits)')
+    .regex(/^\+?\d{8,15}$/, 'whatsapp must be a valid phone number (8–15 digits)')
     .nullable()
     .optional(),
 });
