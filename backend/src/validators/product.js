@@ -8,7 +8,7 @@ const objectIdSchema = (field) =>
   z.string({ required_error: `${field} is required` }).regex(OBJECT_ID_RE, `Invalid ${field}`);
 
 const imageSchema = z.object({
-  url: z.string().url('Image url must be a valid URL'),
+  url: z.string().url({ error: 'Image url must be a valid URL' }),
   publicId: z.string().min(1, 'Image publicId is required'),
 });
 
@@ -22,7 +22,7 @@ const createSchema = z.object({
     .number({ invalid_type_error: 'Stock must be a number' })
     .int('Stock must be an integer')
     .min(0, 'Stock cannot be negative'),
-  category: z.enum(CATEGORIES, { message: `Category must be one of: ${CATEGORIES.join(', ')}` }),
+  category: z.enum(CATEGORIES, { error: `Category must be one of: ${CATEGORIES.join(', ')}` }),
   images: z.array(imageSchema).max(10, 'Maximum 10 images allowed').default([]),
 });
 
