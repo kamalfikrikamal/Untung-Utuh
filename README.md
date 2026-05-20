@@ -123,6 +123,7 @@
 | `react-router-dom` | ^7.15.1 | Client-side routing |
 | `@tanstack/react-query` | ^5.100.10 | Server state management |
 | `axios` | ^1.16.1 | HTTP client |
+| `prop-types` | ^15.8.1 | Runtime props validation |
 | `tailwindcss` | ^4.3.0 | Utility-first CSS |
 | `sonner` | ^2.0.7 | Toast notifications |
 | `vitest` | ^4.1.6 | Unit testing |
