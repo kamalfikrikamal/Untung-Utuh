@@ -50,8 +50,8 @@ storeSchema.pre('save', function () {
   if (this.slug) return;
   const base = this.name
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replaceAll(/[^a-z0-9]+/g, '-')
+    .replaceAll(/^-|-$/g, '');
   this.slug = `${base}-${this._id.toString().slice(-6)}`;
 });
 
