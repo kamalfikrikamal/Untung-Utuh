@@ -9,8 +9,7 @@ export default function InstallPrompt() {
   if (!canInstall) return null;
 
   return (
-    <div
-      role="complementary"
+    <aside
       aria-label="Install app prompt"
       className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-slate-800 border border-slate-600 shadow-xl rounded-2xl px-4 py-3 max-w-sm w-[calc(100%-2rem)]"
     >
@@ -42,6 +41,6 @@ export default function InstallPrompt() {
           Pasang
         </button>
       </div>
-    </div>
+    </aside>
   );
 }
