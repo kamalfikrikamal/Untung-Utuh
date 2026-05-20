@@ -5,14 +5,14 @@ const Store = require('../models/Store');
 
 // --------------- Image Upload ---------------
 
-const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const MAX_IMAGE_COUNT = 10;
 
 const productImageMulter = multer({
   storage: multer.memoryStorage(),
   fileFilter: (_req, file, cb) => {
-    if (ALLOWED_MIMES.includes(file.mimetype)) {
+    if (ALLOWED_MIMES.has(file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error('Only image files (jpg, png, webp, gif) are allowed'), false);
@@ -43,7 +43,7 @@ const uploadProductImages = [
 
       const results = await Promise.all(
         req.files.map((file) => {
-          const publicId = `${Date.now()}-${file.originalname.split('.')[0].replace(/\s+/g, '_')}`;
+          const publicId = `${Date.now()}-${file.originalname.split('.')[0].replaceAll(' ', '_')}`;
           return uploadBufferToCloudinary(file.buffer, {
             folder,
             public_id: publicId,
