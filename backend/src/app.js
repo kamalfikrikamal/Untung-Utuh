@@ -37,12 +37,18 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Data Sanitization — NoSQL Injection (Express 5 compatible)
 // express-mongo-sanitize's default middleware tries to reassign req.query, which is
-// a getter-only property in Express 5. We use the sanitize() function directly instead,
-// mutating only req.body and req.params. req.query NoSQL injection is low-risk
-// for a JSON REST API where MongoDB queries are never built directly from req.query.
+// a getter-only property in Express 5. We use Object.defineProperty to shadow the
+// prototype getter with a sanitized own-property, and use sanitize() directly for
+// req.body and req.params.
 app.use((req, _res, next) => {
   if (req.body) req.body = mongoSanitize.sanitize(req.body);
   if (req.params) req.params = mongoSanitize.sanitize(req.params);
+  // Shadow Express 5's computed req.query getter with a sanitized static own-property
+  Object.defineProperty(req, 'query', {
+    value: mongoSanitize.sanitize(Object.assign({}, req.query)),
+    writable: true,
+    configurable: true,
+  });
   next();
 });
 

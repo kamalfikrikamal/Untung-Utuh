@@ -1,8 +1,26 @@
+const { ZodError } = require('zod');
 const logger = require('../config/logger');
 
 const errorHandler = (err, req, res, _next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Internal Server Error';
+
+  // Zod validation error (fallback — normally caught by validate middleware)
+  if (err instanceof ZodError) {
+    statusCode = 422;
+    message = 'Validation failed';
+    return res.status(statusCode).json({
+      status: 'error',
+      message,
+      errors: err.errors.map((e) => ({ field: e.path.join('.'), message: e.message })),
+    });
+  }
+
+  // Multer file size / type error
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    statusCode = 413;
+    message = 'File size exceeds the 5 MB limit';
+  }
 
   // Mongoose duplicate key
   if (err.code === 11000) {

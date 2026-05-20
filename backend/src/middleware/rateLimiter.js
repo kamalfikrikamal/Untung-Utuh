@@ -24,4 +24,20 @@ const authLimiter = rateLimit({
   },
 });
 
-module.exports = { rateLimiter, authLimiter };
+/**
+ * Tight limiter for the public analytics/track endpoint.
+ * Keyed on IP + storeId so legitimate multi-store clients are not penalised.
+ */
+const analyticsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'production' ? 30 : 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => `${req.ip}:${req.body?.storeId || ''}`,
+  message: {
+    status: 'error',
+    message: 'Too many tracking requests, please slow down.',
+  },
+});
+
+module.exports = { rateLimiter, authLimiter, analyticsLimiter };
