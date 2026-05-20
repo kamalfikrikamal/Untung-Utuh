@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import compression from 'vite-plugin-compression2';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [
+    tailwindcss(),
+    react(),
+    // Generate .gz companion files at build time so nginx can serve them via gzip_static
+    compression({ algorithm: 'gzip', exclude: [/\.(br|gz)$/, /\.map$/] }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
