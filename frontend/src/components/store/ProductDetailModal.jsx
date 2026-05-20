@@ -91,8 +91,8 @@ export default function ProductDetailModal({ product, onClose, whatsapp, storeId
             <>
               {/* Quantity selector */}
               <div>
-                <label className="block text-sm text-slate-400 mb-2">Quantity</label>
-                <div className="flex items-center gap-3">
+                <p id="qty-label" className="block text-sm text-slate-400 mb-2">Quantity</p>
+                <div role="group" aria-labelledby="qty-label" className="flex items-center gap-3">
                   <button
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     className="w-9 h-9 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors text-lg font-medium"

@@ -23,15 +23,19 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
   return createPortal(
     <div
       ref={overlayRef}
+      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 overflow-y-auto"
       onClick={(e) => e.target === overlayRef.current && onClose()}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? 'modal-title' : undefined}
         className={`bg-slate-900 rounded-2xl w-full ${SIZES[size]} shadow-2xl border border-slate-700 my-4`}
       >
         {title && (
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
-            <h2 className="text-lg font-semibold text-white">{title}</h2>
+            <h2 id="modal-title" className="text-lg font-semibold text-white">{title}</h2>
             <button
               onClick={onClose}
               aria-label="Close modal"
