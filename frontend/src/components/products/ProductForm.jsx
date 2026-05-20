@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useUploadProductImages } from '@/hooks/useProducts';
 
 const CATEGORIES = [
@@ -268,3 +269,18 @@ export default function ProductForm({ initial, onSubmit, loading }) {
     </form>
   );
 }
+
+ProductForm.propTypes = {
+  initial: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number,
+    stock: PropTypes.number,
+    category: PropTypes.string,
+    images: PropTypes.arrayOf(
+      PropTypes.shape({ url: PropTypes.string.isRequired })
+    ),
+  }),
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+};
