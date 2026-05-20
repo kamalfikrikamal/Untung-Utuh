@@ -107,6 +107,7 @@
 | `mongoose` | ^9.6.2 | ODM MongoDB |
 | `jsonwebtoken` | ^9.0.3 | JWT auth |
 | `bcryptjs` | ^3.0.3 | Password hashing |
+| `zod` | ^4.4.3 | Schema validation & sanitization |
 | `cloudinary` | ^2.10.0 | CDN upload gambar |
 | `multer` | ^2.1.1 | Multipart file upload |
 | `helmet` | ^8.1.0 | Security headers |
@@ -282,20 +283,34 @@ untung-utuh/
 │       │   └── logger.js           # Konfigurasi Winston
 │       ├── 📁 controllers/
 │       │   ├── authController.js   # Logic autentikasi
-│       │   └── uploadController.js # Logic upload file
+│       │   ├── storeController.js  # Logic CRUD toko
+│       │   ├── productController.js# Logic CRUD produk + upload gambar
+│       │   ├── analyticsController.js # Logic event tracking & summary
+│       │   └── uploadController.js # Logic upload file umum
 │       ├── 📁 middleware/
-│       │   ├── auth.js             # JWT middleware
+│       │   ├── auth.js             # JWT protect middleware
 │       │   ├── cors.js             # CORS middleware
 │       │   ├── errorHandler.js     # Global error handler
-│       │   └── rateLimiter.js      # Rate limiting middleware
+│       │   ├── rateLimiter.js      # Rate limiting (auth & analytics)
+│       │   └── validate.js         # Zod validation middleware
 │       ├── 📁 models/
-│       │   └── User.js             # Mongoose User schema
-│       └── 📁 routes/
-│           ├── auth.js             # Route autentikasi
-│           ├── health.js           # Health check endpoint
-│           ├── sitemap.js          # Sitemap XML generator
-│           ├── upload.js           # Route upload file
-│           └── index.js            # Router utama
+│       │   ├── User.js             # Mongoose User schema
+│       │   ├── Store.js            # Mongoose Store schema
+│       │   ├── Product.js          # Mongoose Product schema
+│       │   └── Analytics.js        # Mongoose Analytics schema (TTL 90d)
+│       ├── 📁 routes/
+│       │   ├── index.js            # Router utama
+│       │   ├── auth.js             # Route autentikasi
+│       │   ├── store.js            # Route toko
+│       │   ├── product.js          # Route produk
+│       │   ├── analytics.js        # Route analytics
+│       │   ├── upload.js           # Route upload file
+│       │   ├── health.js           # Health check endpoint
+│       │   └── sitemap.js          # Sitemap XML generator
+│       └── 📁 validators/
+│           ├── store.js            # Zod schema validasi toko
+│           ├── product.js          # Zod schema validasi produk
+│           └── analytics.js        # Zod schema validasi analytics
 │   └── 📁 tests/
 │       ├── auth.test.js            # Test autentikasi
 │       ├── health.test.js          # Test health check
@@ -309,25 +324,59 @@ untung-utuh/
 │   ├── 📄 Dockerfile.dev           # Image development (hot reload)
 │   ├── 📄 nginx.conf               # Konfigurasi Nginx (production)
 │   ├── 📄 .env.example             # Template environment frontend
+│   ├── 📁 public/
+│   │   ├── manifest.webmanifest    # PWA web app manifest
+│   │   ├── sw.js                   # Service worker (cache-first strategy)
+│   │   ├── offline.html            # Halaman fallback offline
+│   │   └── icons/                  # App icons (SVG, maskable)
 │   └── 📁 src/
-│       ├── 📄 main.jsx             # Entry point React
-│       ├── 📄 App.jsx              # Root component & routing
+│       ├── 📄 main.jsx             # Entry point React + SW registration
+│       ├── 📄 App.jsx              # Root component & routing (lazy)
 │       ├── 📁 components/
 │       │   ├── Layout/             # Layout wrapper
-│       │   └── SEO/                # SEO metadata (React 19 native)
+│       │   ├── SEO/                # SEO metadata (React 19 native)
+│       │   ├── products/
+│       │   │   ├── ProductCard.jsx # Kartu produk di dashboard
+│       │   │   └── ProductForm.jsx # Form buat/edit produk
+│       │   ├── store/
+│       │   │   ├── StoreHeader.jsx        # Header profil toko publik
+│       │   │   ├── StoreProductCard.jsx   # Kartu produk di halaman toko
+│       │   │   └── ProductDetailModal.jsx # Modal detail produk + WA order
+│       │   └── ui/
+│       │       ├── Skeleton.jsx    # Loading skeleton
+│       │       ├── LazyImage.jsx   # Gambar lazy-load dengan blur
+│       │       ├── Modal.jsx       # Base modal component
+│       │       ├── ConfirmDialog.jsx # Dialog konfirmasi hapus
+│       │       ├── OfflineBanner.jsx # Banner status offline
+│       │       └── InstallPrompt.jsx # Prompt install PWA
 │       ├── 📁 hooks/
-│       │   └── useUpload.js        # Custom hook upload file
+│       │   ├── useProducts.js      # React Query CRUD + infinite scroll
+│       │   ├── useStore.js         # React Query data toko
+│       │   ├── useAnalytics.js     # Event tracking hooks
+│       │   ├── useDebounce.js      # Debounce input
+│       │   ├── useNetworkStatus.js # Online/offline detector
+│       │   └── useInstallPrompt.js # PWA install prompt handler
 │       ├── 📁 pages/
 │       │   ├── Home.jsx            # Halaman beranda
+│       │   ├── Dashboard.jsx       # Dashboard seller (CRUD produk)
+│       │   ├── StorePage.jsx       # Halaman toko publik
 │       │   └── NotFound.jsx        # Halaman 404
+│       ├── 📁 services/
+│       │   ├── productService.js   # API calls produk
+│       │   ├── storeService.js     # API calls toko
+│       │   └── analyticsService.js # API calls analytics
 │       ├── 📁 styles/
-│       │   └── index.css           # Global styles + Tailwind
+│       │   └── index.css           # Global styles + Tailwind v4
 │       └── 📁 utils/
 │           └── api.js              # Axios instance & interceptors
 │   └── 📁 tests/
 │       ├── App.test.jsx            # Test App component
 │       ├── SEO.test.jsx            # Test SEO component
 │       └── setup.js               # Setup Vitest
+│
+├── 📁 postman/
+│   ├── Untung Utuh API.postman_collection.json  # Koleksi 24 request Postman v2.1
+│   └── Untung Utuh — Dev.postman_environment.json # Environment variabel dev
 │
 └── 📁 docker/
     ├── 📁 mongo/
