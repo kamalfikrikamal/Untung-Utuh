@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 
 const SIZES = {
@@ -26,6 +27,7 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
       role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 overflow-y-auto"
       onClick={(e) => e.target === overlayRef.current && onClose()}
+      onKeyDown={(e) => e.key === 'Escape' && onClose()}
     >
       <div
         role="dialog"
@@ -51,3 +53,11 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
     document.body
   );
 }
+
+Modal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
+};
