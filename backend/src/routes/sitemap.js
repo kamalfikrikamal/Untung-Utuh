@@ -1,7 +1,7 @@
 const express = require('express');
 // sitemap v9: SitemapStream and streamToPromise still exported from main package
 const { SitemapStream, streamToPromise } = require('sitemap');
-const { Readable } = require('stream');
+const { Readable } = require('node:stream');
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get('/sitemap.xml', async (req, res, next) => {
     const hostname = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
 
     const links = [
-      { url: '/', changefreq: 'daily', priority: 1.0 },
+      { url: '/', changefreq: 'daily', priority: 1 },
       { url: '/about', changefreq: 'monthly', priority: 0.7 },
       { url: '/contact', changefreq: 'monthly', priority: 0.6 },
     ];
