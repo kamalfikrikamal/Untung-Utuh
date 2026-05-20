@@ -47,3 +47,6 @@ Thumbs.db
 
 # Docker override (local dev customizations)
 docker-compose.override.yml
+
+# SonarQube scanner cache
+.scannerwork/
