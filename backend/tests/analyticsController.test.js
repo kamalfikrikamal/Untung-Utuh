@@ -93,14 +93,18 @@ describe('Analytics Routes', () => {
         .spyOn(Analytics, 'create')
         .mockRejectedValueOnce(new Error('DB write failed'));
 
-      await request(app)
+      // The route responds 202 immediately (fire-and-forget); the DB error happens later
+      const res = await request(app)
         .post('/api/analytics/track')
         .send({ storeId, eventType: 'wa_order' });
 
-      // Wait for setImmediate to fire and the error to be logged
+      // Wait for the deferred setImmediate callback to execute (and fail)
       await new Promise((resolve) => setImmediate(resolve));
+
+      expect(res.statusCode).toBe(202);
+      expect(spy).toHaveBeenCalledTimes(1);
+
       spy.mockRestore();
-      // No assertion — coverage of the catch block is the goal
     });
   });
 
