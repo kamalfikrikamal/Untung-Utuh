@@ -45,7 +45,7 @@ app.use((req, _res, next) => {
   if (req.params) req.params = mongoSanitize.sanitize(req.params);
   // Shadow Express 5's computed req.query getter with a sanitized static own-property
   Object.defineProperty(req, 'query', {
-    value: mongoSanitize.sanitize(Object.assign({}, req.query)),
+    value: mongoSanitize.sanitize({ ...req.query }),
     writable: true,
     configurable: true,
   });
