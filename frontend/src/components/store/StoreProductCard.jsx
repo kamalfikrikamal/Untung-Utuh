@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import LazyImage from '@/components/ui/LazyImage';
 
 const formatCurrency = (n) =>
@@ -41,3 +42,15 @@ export default function StoreProductCard({ product, onClick }) {
     </button>
   );
 }
+
+StoreProductCard.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired,
+    images: PropTypes.arrayOf(
+      PropTypes.shape({ url: PropTypes.string.isRequired })
+    ),
+  }).isRequired,
+  onClick: PropTypes.func.isRequired,
+};
