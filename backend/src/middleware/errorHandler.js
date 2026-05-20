@@ -12,7 +12,7 @@ const errorHandler = (err, req, res, _next) => {
     return res.status(statusCode).json({
       status: 'error',
       message,
-      errors: err.errors.map((e) => ({ field: e.path.join('.'), message: e.message })),
+      errors: err.issues.map((e) => ({ field: e.path.join('.'), message: e.message })),
     });
   }
 
