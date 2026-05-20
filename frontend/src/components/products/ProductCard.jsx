@@ -23,6 +23,15 @@ export default function ProductCard({ product, onEdit, onDelete }) {
   const { name, price, stock, category, images, isActive } = product;
   const thumbnail = images?.[0]?.url;
 
+  let stockColorClass;
+  if (stock === 0) {
+    stockColorClass = 'text-red-400';
+  } else if (stock < 5) {
+    stockColorClass = 'text-yellow-400';
+  } else {
+    stockColorClass = 'text-slate-400';
+  }
+
   return (
     <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 flex flex-col hover:border-slate-600 transition-colors">
       {/* Thumbnail */}
@@ -54,9 +63,7 @@ export default function ProductCard({ product, onEdit, onDelete }) {
         <div className="flex items-center justify-between">
           <span className="text-emerald-400 font-bold text-sm">{formatCurrency(price)}</span>
           <span
-            className={`text-xs font-medium ${
-              stock === 0 ? 'text-red-400' : stock < 5 ? 'text-yellow-400' : 'text-slate-400'
-            }`}
+            className={`text-xs font-medium ${stockColorClass}`}
           >
             {stock === 0 ? 'Out of stock' : `Stock: ${stock}`}
           </span>
