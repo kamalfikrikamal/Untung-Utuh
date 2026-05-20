@@ -26,7 +26,8 @@ const uploadBufferToCloudinary = (buffer, options) =>
     const stream = cloudinary.uploader.upload_stream(options, (err, result) => {
       if (err) {
         if (err instanceof Error) return reject(err);
-        return reject(new Error(typeof err === 'string' ? err : JSON.stringify(err)));
+        const errMsg = typeof err === 'string' ? err : JSON.stringify(err);
+        return reject(new Error(errMsg));
       }
       resolve(result);
     });
