@@ -1,0 +1,1080 @@
+{
+  "info": {
+    "_postman_id": "55e7a3b0-1f2c-4d8e-9b6a-7c3d2e1f0a9b",
+    "name": "Untung Utuh API",
+    "description": "## Untung Utuh — Complete API Test Collection\n\n### Quick Start\n1. Import this file **and** `Untung Utuh — Dev.postman_environment.json`\n2. Select the **Untung Utuh — Dev** environment in the top-right dropdown\n3. Open **Collection Runner** (▶ Run Collection) and run folders in this order:\n   `Auth` → `Stores` → `Products` → `Upload` → `Analytics` → `Validation Errors`\n4. Every test auto-propagates `authToken`, `storeId`, and `productId` to the environment\n\n### Prerequisites\n- Backend running locally on `http://localhost:5001`\n- MongoDB accessible (local Docker or Atlas)\n- **Cloudinary** credentials in backend `.env` (required for Upload tests)\n- Run against **dev/staging only** — never production\n\n### Cleanup\nTest accounts use the `test_` prefix (`test_user@example.com`). Delete them after testing or use a dedicated test DB.\n\n### Note on Store\nThere is no `POST /stores` endpoint yet. After the **Auth** folder runs, manually paste your `storeId` into the environment (or check DB / run `GET /stores/my` from the Stores folder to auto-extract it).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{authToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl",   "value": "http://localhost:5001/api", "type": "string" },
+    { "key": "authToken", "value": "",                          "type": "string" },
+    { "key": "storeId",   "value": "",                          "type": "string" },
+    { "key": "productId", "value": "",                          "type": "string" }
+  ],
+  "item": [
+
+    {
+      "name": "Auth",
+      "item": [
+
+        {
+          "name": "Register (test user)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"test_seller\",\n  \"email\": \"test_user@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Register returns 201 on success, 409 if email already exists — both are acceptable",
+                  "pm.test('Status is 201 or 409', () => {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.test('Response status is success', () => {",
+                  "    pm.expect(json.status).to.eql('success');",
+                  "  });",
+                  "  pm.test('Token is a string', () => {",
+                  "    pm.expect(json.token).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  pm.test('User has _id and email', () => {",
+                  "    pm.expect(json.data.user._id).to.be.a('string');",
+                  "    pm.expect(json.data.user.email).to.eql('test_user@example.com');",
+                  "  });",
+                  "  pm.environment.set('authToken', json.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test_user@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Token is a non-empty string', () => {",
+                  "  pm.expect(json.token).to.be.a('string').and.not.empty;",
+                  "});",
+                  "pm.test('User object contains email', () => {",
+                  "  pm.expect(json.data.user.email).to.eql('test_user@example.com');",
+                  "});",
+                  "pm.test('Password is not exposed', () => {",
+                  "  pm.expect(json.data.user.password).to.be.undefined;",
+                  "});",
+                  "",
+                  "// Propagate token for all subsequent requests",
+                  "pm.environment.set('authToken', json.token);"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('User matches logged-in account', () => {",
+                  "  pm.expect(json.data.user.email).to.eql('test_user@example.com');",
+                  "});",
+                  "pm.test('Password is not exposed', () => {",
+                  "  pm.expect(json.data.user.password).to.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Login — wrong password (expect 401)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test_user@example.com\",\n  \"password\": \"WrongPassword!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});",
+                  "pm.test('Error message is present', () => {",
+                  "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "Stores",
+      "item": [
+
+        {
+          "name": "Create Store",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Toko Test Saya\",\n  \"description\": \"Toko percobaan untuk testing API\",\n  \"whatsapp\": \"+6281234567890\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/stores",
+              "host": ["{{baseUrl}}"],
+              "path": ["stores"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Store has _id and slug', () => {",
+                  "  pm.expect(json.data.store._id).to.be.a('string');",
+                  "  pm.expect(json.data.store.slug).to.be.a('string');",
+                  "});",
+                  "",
+                  "// Auto-save storeId for subsequent requests",
+                  "pm.environment.set('storeId', json.data.store._id);",
+                  "console.log('storeId set to:', json.data.store._id, '| slug:', json.data.store.slug);"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get My Stores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stores/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["stores", "my"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Stores is an array', () => {",
+                  "  pm.expect(json.data.stores).to.be.an('array');",
+                  "});",
+                  "",
+                  "// Auto-extract first store ID for subsequent requests",
+                  "const stores = json.data.stores;",
+                  "if (stores.length > 0) {",
+                  "  pm.environment.set('storeId', stores[0]._id);",
+                  "  console.log('storeId set to:', stores[0]._id);",
+                  "} else {",
+                  "  console.warn('No stores found — create a store then manually set storeId in the environment');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Store by Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stores/test-store",
+              "host": ["{{baseUrl}}"],
+              "path": ["stores", "test-store"],
+              "description": "Replace 'test-store' with an actual store slug from your DB"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Store may or may not exist — accept 200 or 404",
+                  "pm.test('Status is 200 or 404', () => {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.test('Store has required fields', () => {",
+                  "    pm.expect(json.data.store._id).to.be.a('string');",
+                  "    pm.expect(json.data.store.name).to.be.a('string');",
+                  "    pm.expect(json.data.store.slug).to.be.a('string');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "Products",
+      "item": [
+
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"store\": \"{{storeId}}\",\n  \"name\": \"test_product Sepatu Running Pro\",\n  \"description\": \"Sepatu lari ringan untuk semua medan.\",\n  \"price\": 299000,\n  \"stock\": 50,\n  \"category\": \"sports\",\n  \"images\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Product has _id', () => {",
+                  "  pm.expect(json.data.product._id).to.be.a('string');",
+                  "});",
+                  "pm.test('Product name matches', () => {",
+                  "  pm.expect(json.data.product.name).to.include('test_product');",
+                  "});",
+                  "pm.test('Price is a number', () => {",
+                  "  pm.expect(json.data.product.price).to.be.a('number');",
+                  "});",
+                  "pm.test('isActive defaults to true', () => {",
+                  "  pm.expect(json.data.product.isActive).to.be.true;",
+                  "});",
+                  "",
+                  "// Propagate productId for subsequent requests",
+                  "pm.environment.set('productId', json.data.product._id);",
+                  "console.log('productId set to:', json.data.product._id);"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "List Products",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?store={{storeId}}&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "store",  "value": "{{storeId}}" },
+                { "key": "page",   "value": "1" },
+                { "key": "limit",  "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Products is an array', () => {",
+                  "  pm.expect(json.data.products).to.be.an('array');",
+                  "});",
+                  "pm.test('Pagination object is present', () => {",
+                  "  pm.expect(json.data.pagination).to.be.an('object');",
+                  "  pm.expect(json.data.pagination.total).to.be.a('number');",
+                  "  pm.expect(json.data.pagination.page).to.eql(1);",
+                  "  pm.expect(json.data.pagination.limit).to.eql(10);",
+                  "  pm.expect(json.data.pagination.pages).to.be.a('number');",
+                  "});",
+                  "pm.test('At least one product exists', () => {",
+                  "  pm.expect(json.data.products.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Product _id matches environment variable', () => {",
+                  "  pm.expect(json.data.product._id).to.eql(pm.environment.get('productId'));",
+                  "});",
+                  "pm.test('Store is populated (has name)', () => {",
+                  "  pm.expect(json.data.product.store).to.be.an('object');",
+                  "  pm.expect(json.data.product.store.name).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 249000,\n  \"stock\": 45,\n  \"description\": \"Updated — Sepatu lari ringan, sekarang lebih hemat!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Price was updated', () => {",
+                  "  pm.expect(json.data.product.price).to.eql(249000);",
+                  "});",
+                  "pm.test('Stock was updated', () => {",
+                  "  pm.expect(json.data.product.stock).to.eql(45);",
+                  "});",
+                  "pm.test('isActive is still true after update', () => {",
+                  "  pm.expect(json.data.product.isActive).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Delete Product (soft delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Product is soft-deleted (isActive = false)', () => {",
+                  "  pm.expect(json.data.product.isActive).to.be.false;",
+                  "});",
+                  "pm.test('Product _id is unchanged', () => {",
+                  "  pm.expect(json.data.product._id).to.eql(pm.environment.get('productId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "List Products — filter by category",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?store={{storeId}}&category=sports&page=1&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "store",    "value": "{{storeId}}" },
+                { "key": "category", "value": "sports" },
+                { "key": "page",     "value": "1" },
+                { "key": "limit",    "value": "5" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('All returned products belong to sports category', () => {",
+                  "  json.data.products.forEach(p => {",
+                  "    pm.expect(p.category).to.eql('sports');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "Upload",
+      "item": [
+
+        {
+          "name": "Upload Product Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select one or more image files (JPEG / PNG / WebP / GIF, max 5 MB each, max 10 files)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/images",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "images"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Images array is returned', () => {",
+                  "  pm.expect(json.data.images).to.be.an('array').and.not.empty;",
+                  "});",
+                  "pm.test('Each image has url and publicId', () => {",
+                  "  json.data.images.forEach(img => {",
+                  "    pm.expect(img.url).to.be.a('string').and.include('cloudinary.com');",
+                  "    pm.expect(img.publicId).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "});",
+                  "",
+                  "// Save first URL so you can paste it into a Create Product body",
+                  "if (json.data.images.length > 0) {",
+                  "  pm.environment.set('uploadedImageUrl', json.data.images[0].url);",
+                  "  pm.environment.set('uploadedImagePublicId', json.data.images[0].publicId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Upload — no file (expect 400)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": { "mode": "formdata", "formdata": [] },
+            "url": {
+              "raw": "{{baseUrl}}/products/images",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "images"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});",
+                  "pm.test('Error message mentions files', () => {",
+                  "  pm.expect(json.message.toLowerCase()).to.include('file');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "Analytics",
+      "item": [
+
+        {
+          "name": "Track — store view",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"{{storeId}}\",\n  \"eventType\": \"view\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/analytics/track",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "track"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 202 (accepted, async write)', () => pm.response.to.have.status(202));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Track — product click",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"{{storeId}}\",\n  \"productId\": \"{{productId}}\",\n  \"eventType\": \"click\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/analytics/track",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "track"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 202', () => pm.response.to.have.status(202));",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(pm.response.json().status).to.eql('success');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Track — wa_order",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"{{storeId}}\",\n  \"productId\": \"{{productId}}\",\n  \"eventType\": \"wa_order\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/analytics/track",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "track"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 202', () => pm.response.to.have.status(202));",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(pm.response.json().status).to.eql('success');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Analytics Summary (daily)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/summary?storeId={{storeId}}&granularity=daily",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "summary"],
+              "query": [
+                { "key": "storeId",     "value": "{{storeId}}" },
+                { "key": "granularity", "value": "daily" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is success', () => {",
+                  "  pm.expect(json.status).to.eql('success');",
+                  "});",
+                  "pm.test('Totals object has required keys', () => {",
+                  "  const t = json.data.totals;",
+                  "  pm.expect(t.view).to.be.a('number');",
+                  "  pm.expect(t.click).to.be.a('number');",
+                  "  pm.expect(t.wa_order).to.be.a('number');",
+                  "  pm.expect(t.conversionRate).to.be.a('number');",
+                  "});",
+                  "pm.test('Series is an array', () => {",
+                  "  pm.expect(json.data.series).to.be.an('array');",
+                  "});",
+                  "pm.test('Granularity matches request', () => {",
+                  "  pm.expect(json.data.granularity).to.eql('daily');",
+                  "});",
+                  "if (json.data.series.length > 0) {",
+                  "  pm.test('Series entries have period and counts', () => {",
+                  "    const entry = json.data.series[0];",
+                  "    pm.expect(entry.period).to.be.a('string');",
+                  "    pm.expect(entry.view).to.be.a('number');",
+                  "    pm.expect(entry.click).to.be.a('number');",
+                  "    pm.expect(entry.wa_order).to.be.a('number');",
+                  "    pm.expect(entry.conversionRate).to.be.a('number');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Analytics Summary (weekly)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/summary?storeId={{storeId}}&granularity=weekly",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "summary"],
+              "query": [
+                { "key": "storeId",     "value": "{{storeId}}" },
+                { "key": "granularity", "value": "weekly" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Granularity is weekly', () => {",
+                  "  pm.expect(json.data.granularity).to.eql('weekly');",
+                  "});",
+                  "pm.test('Totals are numeric', () => {",
+                  "  pm.expect(json.data.totals.view).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "Validation Errors",
+      "item": [
+
+        {
+          "name": "Create Product — missing required fields (expect 422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"store\": \"{{storeId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 422 (Zod validation error)', () => pm.response.to.have.status(422));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});",
+                  "pm.test('Errors is a non-empty array', () => {",
+                  "  pm.expect(json.errors).to.be.an('array').and.not.empty;",
+                  "});",
+                  "pm.test('Each error has field and message', () => {",
+                  "  json.errors.forEach(e => {",
+                  "    pm.expect(e.field).to.be.a('string');",
+                  "    pm.expect(e.message).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Create Product — invalid category (expect 422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"store\": \"{{storeId}}\",\n  \"name\": \"Test\",\n  \"price\": 10000,\n  \"stock\": 1,\n  \"category\": \"invalid_category\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 422', () => pm.response.to.have.status(422));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Error is about category field', () => {",
+                  "  const categoryError = json.errors.find(e => e.field === 'category');",
+                  "  pm.expect(categoryError).to.not.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Get Product — invalid ObjectId (expect 422)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/not-a-valid-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "not-a-valid-id"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 422 (invalid ObjectId format)', () => pm.response.to.have.status(422));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Protected route — no token (expect 401)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"store\": \"{{storeId}}\",\n  \"name\": \"Should Fail\",\n  \"price\": 1000,\n  \"stock\": 1,\n  \"category\": \"other\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 401 (missing token)', () => pm.response.to.have.status(401));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});",
+                  "pm.test('No sensitive data leaked in error', () => {",
+                  "  pm.expect(JSON.stringify(json)).to.not.include('stack');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Track — unknown eventType (expect 422)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"{{storeId}}\",\n  \"eventType\": \"purchase\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/analytics/track",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "track"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 422 (unknown eventType rejected by Zod)', () => pm.response.to.have.status(422));",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Response status is error', () => {",
+                  "  pm.expect(json.status).to.eql('error');",
+                  "});",
+                  "pm.test('Error message mentions eventType', () => {",
+                  "  const eventErr = json.errors.find(e => e.field === 'eventType');",
+                  "  pm.expect(eventErr).to.not.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+
+      ]
+    }
+
+  ]
+}
