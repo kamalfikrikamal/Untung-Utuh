@@ -8,7 +8,7 @@ const objectIdSchema = (field) =>
   z.string({ required_error: `${field} is required` }).regex(OBJECT_ID_RE, `Invalid ${field}`);
 
 const imageSchema = z.object({
-  url: z.string().url({ error: 'Image url must be a valid URL' }),
+  url: z.url({ error: 'Image url must be a valid URL' }),
   publicId: z.string().min(1, 'Image publicId is required'),
 });
 
