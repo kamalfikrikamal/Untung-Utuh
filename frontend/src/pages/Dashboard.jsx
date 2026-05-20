@@ -11,6 +11,8 @@ import ProductForm from '@/components/products/ProductForm';
 import Modal from '@/components/ui/Modal';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
+const SKELETON_ITEMS = Array.from({ length: 8 }, (_, i) => `skeleton-${i + 1}`);
+
 export default function Dashboard() {
   const [modal, setModal] = useState({ open: false, product: null });
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -66,6 +68,44 @@ export default function Dashboard() {
     );
   }
 
+  let productCountText;
+  if (productsLoading) {
+    productCountText = '\u2026';
+  } else {
+    productCountText = `${products.length} product${products.length === 1 ? '' : 's'}`;
+  }
+
+  let productGrid;
+  if (productsLoading) {
+    productGrid = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {SKELETON_ITEMS.map((id) => (
+          <div key={id} className="bg-slate-800 rounded-xl h-64 animate-pulse border border-slate-700" />
+        ))}
+      </div>
+    );
+  } else if (products.length === 0) {
+    productGrid = (
+      <div className="flex flex-col items-center justify-center py-24 gap-3 text-slate-500">
+        <span className="text-5xl">📦</span>
+        <p>No products yet. Add your first product!</p>
+      </div>
+    );
+  } else {
+    productGrid = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {products.map((p) => (
+          <ProductCard
+            key={p._id}
+            product={p}
+            onEdit={openEdit}
+            onDelete={setDeleteTarget}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header row */}
@@ -73,7 +113,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-2xl font-bold text-white">{store.name}</h1>
           <p className="text-slate-400 text-sm mt-0.5">
-            {productsLoading ? '…' : `${products.length} product${products.length !== 1 ? 's' : ''}`}
+            {productCountText}
           </p>
         </div>
         <button
@@ -86,29 +126,7 @@ export default function Dashboard() {
       </div>
 
       {/* Product grid */}
-      {productsLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="bg-slate-800 rounded-xl h-64 animate-pulse border border-slate-700" />
-          ))}
-        </div>
-      ) : products.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-3 text-slate-500">
-          <span className="text-5xl">📦</span>
-          <p>No products yet. Add your first product!</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.map((p) => (
-            <ProductCard
-              key={p._id}
-              product={p}
-              onEdit={openEdit}
-              onDelete={setDeleteTarget}
-            />
-          ))}
-        </div>
-      )}
+      {productGrid}
 
       {/* Create / Edit modal */}
       <Modal
