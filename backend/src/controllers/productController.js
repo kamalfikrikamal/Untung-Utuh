@@ -24,7 +24,7 @@ const productImageMulter = multer({
 const uploadBufferToCloudinary = (buffer, options) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(options, (err, result) => {
-      if (err) return reject(err);
+      if (err) return reject(err instanceof Error ? err : new Error(String(err)));
       resolve(result);
     });
     stream.end(buffer);
@@ -110,8 +110,8 @@ const getAll = async (req, res, next) => {
     if (isActive !== undefined) filter.isActive = isActive === 'true';
     if (search) filter.$text = { $search: search };
 
-    const pageNum = Math.max(1, parseInt(page, 10) || 1);
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
+    const pageNum = Math.max(1, Number.parseInt(page, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, Number.parseInt(limit, 10) || 20));
     const skip = (pageNum - 1) * limitNum;
 
     const [products, total] = await Promise.all([
