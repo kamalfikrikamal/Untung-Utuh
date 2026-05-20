@@ -1,6 +1,6 @@
 const cloudinary = require('../config/cloudinary');
 const multer = require('multer');
-const { Readable } = require('stream');
+const { Readable } = require('node:stream');
 
 // Custom Cloudinary multer storage engine (multer v2 + cloudinary v2)
 // multer v2: file.stream is a Web Streams ReadableStream → convert to Node.js Readable first
@@ -12,7 +12,7 @@ const cloudinaryStorage = {
     }
 
     const folder = `${process.env.CLOUDINARY_FOLDER || 'mern-app'}/${req.user ? req.user._id : 'public'}`;
-    const publicId = `${Date.now()}-${file.originalname.split('.')[0].replace(/\s+/g, '_')}`;
+    const publicId = `${Date.now()}-${file.originalname.split('.')[0].replaceAll(' ', '_')}`;
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
