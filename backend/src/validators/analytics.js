@@ -23,8 +23,8 @@ const summaryQuerySchema = z
     storeId: z
       .string({ required_error: 'storeId is required' })
       .regex(OBJECT_ID_RE, 'Invalid storeId'),
-    startDate: z.string().datetime({ offset: true, error: 'startDate must be an ISO 8601 datetime' }).optional(),
-    endDate:   z.string().datetime({ offset: true, error: 'endDate must be an ISO 8601 datetime' }).optional(),
+    startDate: z.iso.datetime({ offset: true, error: 'startDate must be an ISO 8601 datetime' }).optional(),
+    endDate:   z.iso.datetime({ offset: true, error: 'endDate must be an ISO 8601 datetime' }).optional(),
     granularity: z.enum(['daily', 'weekly']).default('daily'),
   })
   .strict();
