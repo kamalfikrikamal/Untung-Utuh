@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /** Generic animated skeleton block */
 export function Skeleton({ className = '' }) {
   return (
@@ -7,6 +9,10 @@ export function Skeleton({ className = '' }) {
     />
   );
 }
+
+Skeleton.propTypes = {
+  className: PropTypes.string,
+};
 
 /** Skeleton matching the Dashboard ProductCard */
 export function ProductCardSkeleton() {
