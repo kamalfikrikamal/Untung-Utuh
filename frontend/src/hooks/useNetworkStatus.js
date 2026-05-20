@@ -28,15 +28,15 @@ export function useNetworkStatus() {
       setSaveData(conn.saveData ?? false);
     };
 
-    window.addEventListener('online',  onOnline);
-    window.addEventListener('offline', onOffline);
+    globalThis.addEventListener('online',  onOnline);
+    globalThis.addEventListener('offline', onOffline);
 
     const conn = getConnection();
     conn?.addEventListener('change', onChange);
 
     return () => {
-      window.removeEventListener('online',  onOnline);
-      window.removeEventListener('offline', onOffline);
+      globalThis.removeEventListener('online',  onOnline);
+      globalThis.removeEventListener('offline', onOffline);
       conn?.removeEventListener('change', onChange);
     };
   }, []);
