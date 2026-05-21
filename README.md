@@ -314,9 +314,25 @@ untung-utuh/
 │           ├── product.js          # Zod schema validasi produk
 │           └── analytics.js        # Zod schema validasi analytics
 │   └── 📁 tests/
-│       ├── auth.test.js            # Test autentikasi
-│       ├── health.test.js          # Test health check
-│       └── setup.js               # Setup Jest + MongoDB in-memory
+│       ├── setup.js                    # Setup Jest + MongoDB in-memory
+│       ├── app.test.js                 # Test Express app & middleware
+│       ├── auth.test.js                # Test autentikasi
+│       ├── cloudinary.test.js          # Test konfigurasi Cloudinary
+│       ├── cors.test.js                # Test CORS middleware
+│       ├── database.test.js            # Test koneksi database
+│       ├── errorHandler.test.js        # Test global error handler
+│       ├── health.test.js              # Test health check endpoint
+│       ├── logger.test.js              # Test konfigurasi logger
+│       ├── rateLimiter.test.js         # Test rate limiting
+│       ├── sitemap.test.js             # Test sitemap generator
+│       ├── validate.test.js            # Test Zod validation middleware
+│       ├── Store.test.js               # Test Mongoose Store model
+│       ├── analyticsController.test.js # Test analytics controller
+│       ├── analyticsValidator.test.js  # Test analytics Zod validator
+│       ├── productController.test.js   # Test product controller
+│       ├── storeController.test.js     # Test store controller
+│       ├── uploadController.test.js    # Test upload controller
+│       └── uploadStorage.test.js       # Test upload storage
 │
 ├── 📁 frontend/                    # React 19 + Vite App
 │   ├── 📄 index.html               # HTML entry point
@@ -354,6 +370,7 @@ untung-utuh/
 │       ├── 📁 hooks/
 │       │   ├── useProducts.js      # React Query CRUD + infinite scroll
 │       │   ├── useStore.js         # React Query data toko
+│       │   ├── useUpload.js        # Upload gambar ke Cloudinary
 │       │   ├── useAnalytics.js     # Event tracking hooks
 │       │   ├── useDebounce.js      # Debounce input
 │       │   ├── useNetworkStatus.js # Online/offline detector
@@ -372,9 +389,36 @@ untung-utuh/
 │       └── 📁 utils/
 │           └── api.js              # Axios instance & interceptors
 │   └── 📁 tests/
-│       ├── App.test.jsx            # Test App component
-│       ├── SEO.test.jsx            # Test SEO component
-│       └── setup.js               # Setup Vitest
+│       ├── setup.js                    # Setup Vitest + jsdom
+│       ├── api.test.js                 # Test Axios instance & interceptors
+│       ├── analyticsService.test.js    # Test analytics service
+│       ├── productService.test.js      # Test product service
+│       ├── storeService.test.js        # Test store service
+│       ├── App.test.jsx                # Test App component & routing
+│       ├── App.loading.test.jsx        # Test lazy loading
+│       ├── Dashboard.test.jsx          # Test Dashboard page
+│       ├── StorePage.test.jsx          # Test halaman toko publik
+│       ├── NotFound.test.jsx           # Test halaman 404
+│       ├── Layout.test.jsx             # Test Layout component
+│       ├── SEO.test.jsx                # Test SEO component
+│       ├── ConfirmDialog.test.jsx      # Test dialog konfirmasi
+│       ├── InstallPrompt.test.jsx      # Test PWA install prompt
+│       ├── LazyImage.test.jsx          # Test lazy-load image
+│       ├── Modal.test.jsx              # Test modal component
+│       ├── OfflineBanner.test.jsx      # Test banner offline
+│       ├── Skeleton.test.jsx           # Test skeleton loading
+│       ├── ProductCard.test.jsx        # Test kartu produk dashboard
+│       ├── ProductDetailModal.test.jsx # Test modal detail produk
+│       ├── ProductForm.test.jsx        # Test form produk
+│       ├── StoreHeader.test.jsx        # Test header toko publik
+│       ├── StoreProductCard.test.jsx   # Test kartu produk toko
+│       ├── useAnalytics.test.jsx       # Test useAnalytics hook
+│       ├── useDebounce.test.js         # Test useDebounce hook
+│       ├── useInstallPrompt.test.js    # Test useInstallPrompt hook
+│       ├── useNetworkStatus.test.js    # Test useNetworkStatus hook
+│       ├── useProducts.test.jsx        # Test useProducts hook
+│       ├── useStore.test.jsx           # Test useStore hook
+│       └── useUpload.test.js           # Test useUpload hook
 │
 ├── 📁 postman/
 │   ├── Untung Utuh API.postman_collection.json  # Koleksi 24 request Postman v2.1
