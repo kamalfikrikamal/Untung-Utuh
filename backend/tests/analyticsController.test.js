@@ -180,4 +180,74 @@ describe('Analytics Routes', () => {
       expect(res.body.data).toHaveProperty('endDate');
     });
   });
+
+  describe('Direct controller unit tests (covers getClientIp and summary branches)', () => {
+    const { track: trackCtrl, summary: summaryCtrl } = require('../src/controllers/analyticsController');
+    const User = require('../src/models/User');
+
+    it('getClientIp uses req.socket.remoteAddress when req.ip is null', async () => {
+      const req = {
+        ip: null,
+        socket: { remoteAddress: '10.0.0.1' },
+        body: { storeId, eventType: 'view' },
+        headers: {},
+      };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      await trackCtrl(req, res);
+      expect(res.status).toHaveBeenCalledWith(202);
+    });
+
+    it('getClientIp returns empty string when req.ip and req.socket are both null', async () => {
+      const req = {
+        ip: null,
+        socket: null,
+        body: { storeId, eventType: 'click' },
+        headers: {},
+      };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      await trackCtrl(req, res);
+      expect(res.status).toHaveBeenCalledWith(202);
+    });
+
+    it('summary applies default granularity when not provided in query', async () => {
+      const user = await User.findOne({ email: 'analytics@example.com' });
+      const req = { query: { storeId }, user: { _id: user._id } };
+      const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+      await summaryCtrl(req, res);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: 'success' }));
+    });
+
+    it('pivot silently skips unknown eventType in stored analytics', async () => {
+      const user = await User.findOne({ email: 'analytics@example.com' });
+      // Insert directly via MongoDB driver to bypass Mongoose enum validation
+      await mongoose.connection.collection('analytics').insertOne({
+        storeId: new mongoose.Types.ObjectId(storeId),
+        eventType: 'unknown_type',
+        ipHash: 'zz99',
+        userAgent: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      const req = { query: { storeId }, user: { _id: user._id } };
+      const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+      await summaryCtrl(req, res);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: 'success' }));
+    });
+
+    it('series entry gets conversionRate 0 when view count is 0 for a period', async () => {
+      const user = await User.findOne({ email: 'analytics@example.com' });
+      await Analytics.create({
+        storeId,
+        eventType: 'click',
+        ipHash: 'bb123',
+        userAgent: '',
+      });
+      const req = { query: { storeId }, user: { _id: user._id } };
+      const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+      await summaryCtrl(req, res);
+      const resp = res.json.mock.calls[0][0];
+      const clickPeriod = resp.data.series.find((s) => s.click > 0);
+      expect(clickPeriod?.conversionRate).toBe(0);
+    });
+  });
 });

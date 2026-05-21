@@ -125,4 +125,36 @@ describe('Store Routes', () => {
       expect(res.statusCode).toBe(404);
     });
   });
+
+  describe('Error paths (covers next(err) catch blocks)', () => {
+    const Store = require('../src/models/Store');
+
+    it('returns 500 when Store.create throws', async () => {
+      const spy = jest.spyOn(Store, 'create').mockRejectedValueOnce(new Error('DB failure'));
+      const res = await request(app)
+        .post('/api/stores')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'Error Store' });
+      expect([500, 503]).toContain(res.statusCode);
+      spy.mockRestore();
+    });
+
+    it('returns 500 when Store.find throws', async () => {
+      const spy = jest.spyOn(Store, 'find').mockImplementationOnce(() => {
+        throw new Error('DB failure');
+      });
+      const res = await request(app)
+        .get('/api/stores/my')
+        .set('Authorization', `Bearer ${token}`);
+      expect([500, 503]).toContain(res.statusCode);
+      spy.mockRestore();
+    });
+
+    it('returns 500 when Store.findOne throws', async () => {
+      const spy = jest.spyOn(Store, 'findOne').mockRejectedValueOnce(new Error('DB failure'));
+      const res = await request(app).get('/api/stores/some-slug');
+      expect([500, 503]).toContain(res.statusCode);
+      spy.mockRestore();
+    });
+  });
 });

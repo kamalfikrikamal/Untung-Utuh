@@ -119,5 +119,16 @@ describe('Upload Routes', () => {
       const res = await request(app).delete('/api/upload/some-public-id');
       expect(res.statusCode).toBe(401);
     });
+
+    it('returns 500 when cloudinary.uploader.destroy throws an error', async () => {
+      const cloudinaryMock = require('../src/config/cloudinary');
+      cloudinaryMock.uploader.destroy.mockRejectedValueOnce(new Error('Cloudinary API error'));
+
+      const res = await request(app)
+        .delete('/api/upload/my-folder%2Ftest-image-id')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toBe(500);
+    });
   });
 });

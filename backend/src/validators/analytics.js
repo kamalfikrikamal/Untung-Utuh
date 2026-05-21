@@ -12,9 +12,7 @@ const trackSchema = z.object({
     .regex(OBJECT_ID_RE, 'Invalid productId')
     .nullable()
     .optional(),
-  eventType: z.enum(['view', 'click', 'wa_order'], {
-    errorMap: () => ({ message: "eventType must be 'view', 'click', or 'wa_order'" }),
-  }),
+  eventType: z.enum(['view', 'click', 'wa_order']),
 });
 
 /** GET /api/analytics/summary */

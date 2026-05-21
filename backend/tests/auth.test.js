@@ -87,5 +87,44 @@ describe('Auth Routes', () => {
       const res = await request(app).get('/api/auth/me');
       expect(res.statusCode).toBe(401);
     });
+
+    it('returns 401 when user no longer exists after token issued', async () => {
+      const regRes = await request(app).post('/api/auth/register').send(testUser);
+      const token = regRes.body.token;
+
+      // Delete the user from the DB to simulate the "user no longer exists" path
+      const User = require('../src/models/User');
+      await User.deleteOne({ email: testUser.email });
+
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.statusCode).toBe(401);
+      expect(res.body.message).toContain('no longer exists');
+    });
+
+    it('calls next(err) when jwt.verify throws an invalid token error', async () => {
+      const res = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', 'Bearer invalid.jwt.token');
+      // errorHandler converts the jwt error to a response (typically 401 or 500)
+      expect([401, 500]).toContain(res.statusCode);
+    });
+  });
+
+  describe('User model', () => {
+    it('does not re-hash password when saving non-password fields', async () => {
+      await request(app).post('/api/auth/register').send(testUser);
+
+      const User = require('../src/models/User');
+      const user = await User.findOne({ email: testUser.email }).select('+password');
+      const originalHash = user.password;
+
+      user.name = 'Updated Name';
+      await user.save(); // isModified('password') === false → skip rehash
+
+      const updated = await User.findOne({ email: testUser.email }).select('+password');
+      expect(updated.password).toBe(originalHash);
+    });
   });
 });

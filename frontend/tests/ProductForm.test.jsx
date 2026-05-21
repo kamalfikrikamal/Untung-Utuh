@@ -157,4 +157,37 @@ describe('ProductForm', () => {
     const previewImgs = document.querySelectorAll('img[src="blob:mock-preview"]');
     expect(previewImgs.length).toBeGreaterThan(0);
   });
+
+  it('removes a local file when its remove button is clicked', async () => {
+    render(<ProductForm onSubmit={onSubmit} loading={false} />);
+    const fileInput = document.querySelector('input[type="file"]');
+    const file = new File(['img'], 'local.jpg', { type: 'image/jpeg' });
+
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    // A preview image should appear
+    expect(document.querySelectorAll('img[src="blob:mock-preview"]').length).toBeGreaterThan(0);
+
+    // Click the remove button to trigger removeLocalFile
+    const removeBtn = screen.getByLabelText('Remove image');
+    await act(async () => {
+      fireEvent.click(removeBtn);
+    });
+
+    // Preview should be gone
+    expect(document.querySelectorAll('img[src="blob:mock-preview"]').length).toBe(0);
+  });
+
+  it('clicking upload zone button triggers file input click', async () => {
+    render(<ProductForm onSubmit={onSubmit} loading={false} />);
+    const dropZone = screen.getByRole('button', { name: /Upload product images/i });
+    const fileInput = document.querySelector('input[type="file"]');
+    const clickSpy = vi.spyOn(fileInput, 'click').mockImplementation(() => {});
+
+    fireEvent.click(dropZone);
+    expect(clickSpy).toHaveBeenCalled();
+    clickSpy.mockRestore();
+  });
 });

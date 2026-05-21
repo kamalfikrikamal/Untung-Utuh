@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Dashboard from '@/pages/Dashboard';
 
@@ -215,5 +215,58 @@ describe('Dashboard', () => {
     fireEvent.click(screen.getByText('delete'));
     fireEvent.click(screen.getByTestId('confirm-btn'));
     expect(deleteMutate).toHaveBeenCalledWith('p1', expect.any(Object));
+  });
+
+  it('closes confirm dialog when cancel is clicked (covers onClose handler)', () => {
+    const products = [{ _id: 'p1', name: 'Deletable' }];
+    useMyStores.mockReturnValue({
+      data: { stores: [mockStore] },
+      isLoading: false,
+      isError: false,
+    });
+    useProducts.mockReturnValue({ data: { products }, isLoading: false });
+    renderDashboard();
+    fireEvent.click(screen.getByText('delete'));
+    expect(screen.getByTestId('confirm-dialog')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('cancel-btn'));
+    expect(screen.queryByTestId('confirm-dialog')).toBeNull();
+  });
+
+  it('calls closeModal via createProduct onSuccess callback', () => {
+    const createMutate = vi.fn();
+    useCreateProduct.mockReturnValue({ mutate: createMutate, isPending: false });
+    useMyStores.mockReturnValue({
+      data: { stores: [mockStore] },
+      isLoading: false,
+      isError: false,
+    });
+    useProducts.mockReturnValue({ data: { products: [] }, isLoading: false });
+    renderDashboard();
+    fireEvent.click(screen.getByText('Add Product'));
+    expect(screen.getByTestId('modal')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('submit-form'));
+    // Invoke the onSuccess callback to cover closeModal
+    const [, options] = createMutate.mock.calls[0];
+    act(() => { options.onSuccess(); });
+    expect(screen.queryByTestId('modal')).toBeNull();
+  });
+
+  it('calls setDeleteTarget(null) via deleteProduct onSuccess callback', () => {
+    const deleteMutate = vi.fn();
+    useDeleteProduct.mockReturnValue({ mutate: deleteMutate, isPending: false });
+    const products = [{ _id: 'p1', name: 'Wipeable' }];
+    useMyStores.mockReturnValue({
+      data: { stores: [mockStore] },
+      isLoading: false,
+      isError: false,
+    });
+    useProducts.mockReturnValue({ data: { products }, isLoading: false });
+    renderDashboard();
+    fireEvent.click(screen.getByText('delete'));
+    fireEvent.click(screen.getByTestId('confirm-btn'));
+    // Invoke onSuccess to cover the () => setDeleteTarget(null) callback
+    const [, options] = deleteMutate.mock.calls[0];
+    act(() => { options.onSuccess(); });
+    expect(screen.queryByTestId('confirm-dialog')).toBeNull();
   });
 });

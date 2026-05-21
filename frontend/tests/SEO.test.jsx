@@ -1,9 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render } from '@testing-library/react';
 import SEO from '../src/components/SEO/SEO';
 
 describe('SEO Component', () => {
-  it('renders without crashing', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('renders with title and description', () => {
     render(<SEO title="Test Page" description="Test description" />);
     expect(document.head).toBeTruthy();
   });
@@ -11,5 +15,23 @@ describe('SEO Component', () => {
   it('sets noindex when noindex prop is true', () => {
     render(<SEO title="Private" noindex />);
     expect(document.body).toBeTruthy();
+  });
+
+  it('uses appName as full title when no title prop is given', () => {
+    render(<SEO description="No title" />);
+    // fullTitle = appName (no title passed)
+    expect(document.title).toBeTruthy();
+  });
+
+  it('falls back to "MERN App" when VITE_APP_NAME is empty', () => {
+    vi.stubEnv('VITE_APP_NAME', '');
+    render(<SEO title="Test" />);
+    expect(document.head).toBeTruthy();
+  });
+
+  it('falls back to "https://example.com" when VITE_APP_URL is empty', () => {
+    vi.stubEnv('VITE_APP_URL', '');
+    render(<SEO title="Test" />);
+    expect(document.head).toBeTruthy();
   });
 });

@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // req.body and req.params.
 app.use((req, _res, next) => {
   if (req.body) req.body = mongoSanitize.sanitize(req.body);
-  if (req.params) req.params = mongoSanitize.sanitize(req.params);
+  req.params = mongoSanitize.sanitize(req.params); // always an object in Express
   // Shadow Express 5's computed req.query getter with a sanitized static own-property
   Object.defineProperty(req, 'query', {
     value: mongoSanitize.sanitize({ ...req.query }),
