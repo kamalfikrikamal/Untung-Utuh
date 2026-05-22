@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**Platform toko online ringan untuk UMKM — bebas biaya admin, order langsung via WhatsApp.**
+**Platform toko online ringan untuk UMKM — bebas biaya komisi, order langsung via WhatsApp.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white)](https://nodejs.org)
@@ -42,7 +42,7 @@
 
 | Masalah | Dampak |
 |---|---|
-| **Biaya admin marketplace tinggi** | Memotong margin keuntungan penjual hingga 5–15% per transaksi |
+| **Biaya komisi marketplace tinggi** | Memotong margin keuntungan penjual hingga 5–15% per transaksi |
 | **Sulit setup toko online sendiri** | Butuh keahlian teknis & biaya developer yang mahal |
 | **Terikat ekosistem marketplace** | Tidak punya kendali atas data pelanggan & branding |
 
