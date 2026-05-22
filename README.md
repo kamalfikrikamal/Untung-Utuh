@@ -336,8 +336,7 @@ untung-utuh/
 │
 ├── 📁 frontend/                    # React 19 + Vite App
 │   ├── 📄 index.html               # HTML entry point
-│   ├── 📄 vite.config.js           # Konfigurasi Vite
-│   ├── 📄 eslint.config.js         # Konfigurasi ESLint
+│   ├── 📄 vite.config.js           # Konfigurasi Vite   ├── 📄 tailwind.config.js       # Konfigurasi Tailwind CSS v4 + color tokens│   ├── 📄 eslint.config.js         # Konfigurasi ESLint
 │   ├── 📄 Dockerfile               # Image production (Nginx)
 │   ├── 📄 Dockerfile.dev           # Image development (hot reload)
 │   ├── 📄 nginx.conf               # Konfigurasi Nginx (production)
@@ -350,23 +349,36 @@ untung-utuh/
 │   └── 📁 src/
 │       ├── 📄 main.jsx             # Entry point React + SW registration
 │       ├── 📄 App.jsx              # Root component & routing (lazy)
+│       ├── 📄 index.css             # Global styles + Tailwind v4 directives
 │       ├── 📁 components/
-│       │   ├── Layout/             # Layout wrapper
-│       │   ├── SEO/                # SEO metadata (React 19 native)
+│       │   ├── 📄 ErrorBoundary.jsx  # Error boundary global
+│       │   ├── 📄 ProtectedRoute.jsx # Guard route autentikasi
+│       │   ├── Layout/
+│       │   │   ├── AppShell.jsx      # Shell utama (Navbar + Sidebar + Footer)
+│       │   │   ├── Navbar.jsx        # Navigasi atas (landing & publik)
+│       │   │   ├── Sidebar.jsx       # Sidebar dashboard seller
+│       │   │   ├── Footer.jsx        # Footer landing page
+│       │   │   └── Layout.jsx        # Layout fallback
+│       │   ├── SEO/                  # SEO metadata (React 19 native)
 │       │   ├── products/
-│       │   │   ├── ProductCard.jsx # Kartu produk di dashboard
-│       │   │   └── ProductForm.jsx # Form buat/edit produk
+│       │   │   ├── ProductCard.jsx   # Kartu produk di dashboard
+│       │   │   └── ProductForm.jsx   # Form buat/edit produk
 │       │   ├── store/
 │       │   │   ├── StoreHeader.jsx        # Header profil toko publik
 │       │   │   ├── StoreProductCard.jsx   # Kartu produk di halaman toko
 │       │   │   └── ProductDetailModal.jsx # Modal detail produk + WA order
 │       │   └── ui/
-│       │       ├── Skeleton.jsx    # Loading skeleton
-│       │       ├── LazyImage.jsx   # Gambar lazy-load dengan blur
-│       │       ├── Modal.jsx       # Base modal component
-│       │       ├── ConfirmDialog.jsx # Dialog konfirmasi hapus
-│       │       ├── OfflineBanner.jsx # Banner status offline
-│       │       └── InstallPrompt.jsx # Prompt install PWA
+│       │       ├── Button.jsx        # Tombol reusable (default, outline, ghost)
+│       │       ├── Input.jsx         # Input field dengan validasi
+│       │       ├── Label.jsx         # Label form
+│       │       ├── Alert.jsx         # Komponen notifikasi/alert
+│       │       ├── Toast.jsx         # Toast notification
+│       │       ├── Skeleton.jsx      # Loading skeleton
+│       │       ├── LazyImage.jsx     # Gambar lazy-load dengan blur
+│       │       ├── Modal.jsx         # Base modal component
+│       │       ├── ConfirmDialog.jsx  # Dialog konfirmasi hapus
+│       │       ├── OfflineBanner.jsx  # Banner status offline
+│       │       └── InstallPrompt.jsx  # Prompt install PWA
 │       ├── 📁 hooks/
 │       │   ├── useProducts.js      # React Query CRUD + infinite scroll
 │       │   ├── useStore.js         # React Query data toko
@@ -376,18 +388,21 @@ untung-utuh/
 │       │   ├── useNetworkStatus.js # Online/offline detector
 │       │   └── useInstallPrompt.js # PWA install prompt handler
 │       ├── 📁 pages/
-│       │   ├── Home.jsx            # Halaman beranda
+│       │   ├── Landing.jsx         # Landing page publik (UMKM Indonesia)
+│       │   ├── Login.jsx           # Halaman masuk
+│       │   ├── Register.jsx        # Halaman daftar akun
+│       │   ├── Home.jsx            # Halaman beranda (post-login)
 │       │   ├── Dashboard.jsx       # Dashboard seller (CRUD produk)
 │       │   ├── StorePage.jsx       # Halaman toko publik
 │       │   └── NotFound.jsx        # Halaman 404
 │       ├── 📁 services/
+│       │   ├── api.js              # Axios instance & interceptors
 │       │   ├── productService.js   # API calls produk
 │       │   ├── storeService.js     # API calls toko
 │       │   └── analyticsService.js # API calls analytics
-│       ├── 📁 styles/
-│       │   └── index.css           # Global styles + Tailwind v4
 │       └── 📁 utils/
-│           └── api.js              # Axios instance & interceptors
+│           ├── cn.js               # Tailwind class merger (clsx + twMerge)
+│           └── storage.js          # Helper localStorage
 │   └── 📁 tests/
 │       ├── setup.js                    # Setup Vitest + jsdom
 │       ├── api.test.js                 # Test Axios instance & interceptors
