@@ -1,69 +1,46 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Layout from '@/components/Layout/Layout';
-import Home from '@/pages/Home';
-import OfflineBanner from '@/components/ui/OfflineBanner';
-import InstallPrompt from '@/components/ui/InstallPrompt';
+import { AppShell } from './components/Layout/AppShell';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { Skeleton } from './components/ui/Skeleton';
 
-// Dynamic imports — each route gets its own JS chunk (code splitting)
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const StorePage  = lazy(() => import('@/pages/StorePage'));
-const NotFound   = lazy(() => import('@/pages/NotFound'));
+// Lazy loading pages
+const Landing = lazy(() => import('./pages/Landing'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 
-function PageLoader() {
+function SuspenseFallback() {
   return (
-    <output
-      aria-label="Loading page"
-      className="flex items-center justify-center min-h-[60vh] text-slate-500"
-    >
-      <svg
-        className="animate-spin h-8 w-8"
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
-      >
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-      </svg>
-    </output>
+    <div className="min-h-screen flex flex-col items-center justify-center p-24">
+      <Skeleton className="h-12 w-64 mb-8" />
+      <Skeleton className="h-4 w-48" />
+    </div>
   );
 }
 
-export default function App() {
+function App() {
   return (
-    <>
-      <OfflineBanner />
+    <Suspense fallback={<SuspenseFallback />}>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/dashboard"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <Dashboard />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/store/:slug"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <StorePage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <NotFound />
-              </Suspense>
-            }
-          />
+        <Route element={<AppShell />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />}>
+              {/* Nested Dashboard routes go here */}
+              <Route index element={<div className="text-gray-500">Select an option from the sidebar.</div>} />
+              <Route path="projects" element={<div>Projects Component</div>} />
+              <Route path="team" element={<div>Team Component</div>} />
+              <Route path="settings" element={<div>Settings Component</div>} />
+            </Route>
+          </Route>
         </Route>
       </Routes>
-      <InstallPrompt />
-    </>
+    </Suspense>
   );
 }
 
+export default App;
