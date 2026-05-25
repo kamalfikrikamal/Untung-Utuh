@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export class ErrorBoundary extends React.Component {
             <h2 className="text-2xl font-bold text-red-600 mb-8">Oops! Something went wrong.</h2>
             <p className="text-gray-600 mb-24">We're sorry, but an unexpected error occurred.</p>
             <button
-              onClick={() => window.location.href = '/'}
+              onClick={() => { globalThis.location.href = '/'; }}
               className="px-16 py-8 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
             >
               Return Home
@@ -35,3 +36,7 @@ export class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+};
