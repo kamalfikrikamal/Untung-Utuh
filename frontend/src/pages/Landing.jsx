@@ -36,9 +36,9 @@ const features = [
   },
   {
     Icon: BadgeDollarSign,
-    title: '0% Komisi Platform',
+    title: '0% Komisi Per Transaksi',
     description:
-      'Tidak ada potongan per transaksi. Semua keuntungan 100% milik Anda. Hemat hingga 15% vs marketplace.',
+      'Tidak ada potongan per transaksi. Bayar langganan flat (opsional). Hemat hingga 10% vs marketplace.',
     iconBg: 'bg-emerald-100',
     iconColor: 'text-emerald-600',
   },
@@ -47,7 +47,7 @@ const features = [
 const stats = [
   { value: '10K+', label: 'Penjual Aktif' },
   { value: '99.9%', label: 'Uptime' },
-  { value: '0%', label: 'Komisi Platform' },
+  { value: '0%', label: 'Komisi Per Transaksi' },
 ];
 
 const valueProps = [
@@ -88,7 +88,7 @@ const valueProps = [
   },
   {
     Icon: Palette,
-    title: 'Template Siap Pakai',
+    title: '3 Template Siap Pakai',
     description: 'Pilih tema sesuai kategori usaha (kuliner, fashion, kerajinan, dll).',
     iconBg: 'bg-rose-50',
     iconColor: 'text-rose-500',
@@ -306,7 +306,7 @@ export default function Landing() {
               {/* Trust signals */}
               <div className="w-full pt-5 border-t border-white/20 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  'Gratis selamanya untuk paket dasar',
+                  'Gratis selamanya untuk fitur dasar',
                   'Tidak perlu kartu kredit',
                   'Setup 5 menit langsung jualan',
                 ].map((text) => (
