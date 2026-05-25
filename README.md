@@ -371,6 +371,7 @@ untung-utuh/
 │       │       ├── Button.jsx        # Tombol reusable (default, outline, ghost)
 │       │       ├── Input.jsx         # Input field dengan validasi
 │       │       ├── Label.jsx         # Label form
+│       │       ├── FormField.jsx     # Wrapper Label + Input untuk form fields
 │       │       ├── Alert.jsx         # Komponen notifikasi/alert
 │       │       ├── Toast.jsx         # Toast notification
 │       │       ├── Skeleton.jsx      # Loading skeleton
@@ -412,6 +413,9 @@ untung-utuh/
 │       ├── App.test.jsx                # Test App component & routing
 │       ├── App.loading.test.jsx        # Test lazy loading
 │       ├── Dashboard.test.jsx          # Test Dashboard page
+│       ├── Login.test.jsx              # Test halaman login
+│       ├── Register.test.jsx           # Test halaman register
+│       ├── ProtectedRoute.test.jsx     # Test guard route autentikasi
 │       ├── StorePage.test.jsx          # Test halaman toko publik
 │       ├── NotFound.test.jsx           # Test halaman 404
 │       ├── Layout.test.jsx             # Test Layout component

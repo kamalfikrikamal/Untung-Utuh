@@ -4,8 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
+import { FormField } from '../components/ui/FormField';
 import { api } from '../services/api';
 import { storage } from '../utils/storage';
 import { toast } from 'sonner';
@@ -55,49 +54,41 @@ export default function Register() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              {...register('name')}
-              error={errors.name?.message}
-            />
-          </div>
+          <FormField
+            id="name"
+            label="Full Name"
+            type="text"
+            placeholder="John Doe"
+            {...register('name')}
+            error={errors.name?.message}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register('email')}
-              error={errors.email?.message}
-            />
-          </div>
+          <FormField
+            id="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            {...register('email')}
+            error={errors.email?.message}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
-              error={errors.password?.message}
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              {...register('confirmPassword')}
-              error={errors.confirmPassword?.message}
-            />
-          </div>
+          <FormField
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            {...register('password')}
+            error={errors.password?.message}
+          />
+
+          <FormField
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            placeholder="••••••••"
+            {...register('confirmPassword')}
+            error={errors.confirmPassword?.message}
+          />
 
           <Button type="submit" className="w-full" isLoading={isSubmitting}>
             Sign Up
