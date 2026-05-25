@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useMyStores } from '@/hooks/useStore';
+
+const SKELETON_KEYS = Array.from({ length: 8 }, (_, i) => `skeleton-${i}`);
 import {
   useProducts,
   useCreateProduct,
@@ -69,9 +71,8 @@ export default function Dashboard() {
   }
 
   const count = products.length;
-  const countLabel = productsLoading
-    ? '…'
-    : `${count} ${count === 1 ? 'product' : 'products'}`;
+  const productWord = count === 1 ? 'product' : 'products';
+  const countLabel = productsLoading ? '…' : `${count} ${productWord}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -89,15 +90,17 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {productsLoading ? (
+      {productsLoading && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 rounded-xl" />
+          {SKELETON_KEYS.map((key) => (
+            <Skeleton key={key} className="h-40 rounded-xl" />
           ))}
         </div>
-      ) : products.length === 0 ? (
+      )}
+      {!productsLoading && products.length === 0 && (
         <p className="text-gray-500">No products yet. Add your first product!</p>
-      ) : (
+      )}
+      {!productsLoading && products.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((p) => (
             <ProductCard
