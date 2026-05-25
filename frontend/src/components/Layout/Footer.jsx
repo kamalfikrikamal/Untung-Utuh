@@ -1,9 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const footerLinks = {
-  Produk: ['Fitur', 'Harga', 'Template Toko', 'Demo'],
-  Perusahaan: ['Tentang Kami', 'Blog UMKM', 'Testimoni', 'Kontak'],
-  Legal: ['Kebijakan Privasi', 'Syarat & Ketentuan', 'Keamanan Data'],
+  Produk: [
+    { label: 'Fitur', href: '/fitur' },
+    { label: 'Harga', href: null },
+    { label: 'Template Toko', href: null },
+    { label: 'Demo', href: null },
+  ],
+  Perusahaan: [
+    { label: 'Tentang Kami', href: null },
+    { label: 'Blog UMKM', href: null },
+    { label: 'Testimoni', href: null },
+    { label: 'Kontak', href: null },
+  ],
+  Legal: [
+    { label: 'Kebijakan Privasi', href: null },
+    { label: 'Syarat & Ketentuan', href: null },
+    { label: 'Keamanan Data', href: null },
+  ],
 };
 
 export function Footer() {
@@ -32,14 +47,20 @@ export function Footer() {
                 {category}
               </h4>
               <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-gray-500 hover:text-primary-600 transition-colors"
-                    >
-                      {link}
-                    </a>
+                {links.map(({ label, href }) => (
+                  <li key={label}>
+                    {href ? (
+                      <Link
+                        to={href}
+                        className="text-sm text-gray-500 hover:text-primary-600 transition-colors"
+                      >
+                        {label}
+                      </Link>
+                    ) : (
+                      <span className="text-sm text-gray-400 cursor-default">
+                        {label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
