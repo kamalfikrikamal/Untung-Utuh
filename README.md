@@ -389,9 +389,9 @@ untung-utuh/
 │       │   └── useInstallPrompt.js # PWA install prompt handler
 │       ├── 📁 pages/
 │       │   ├── Landing.jsx         # Landing page publik (UMKM Indonesia)
+│       │   ├── Fitur.jsx           # Halaman detail fitur platform
 │       │   ├── Login.jsx           # Halaman masuk
 │       │   ├── Register.jsx        # Halaman daftar akun
-│       │   ├── Home.jsx            # Halaman beranda (post-login)
 │       │   ├── Dashboard.jsx       # Dashboard seller (CRUD produk)
 │       │   ├── StorePage.jsx       # Halaman toko publik
 │       │   └── NotFound.jsx        # Halaman 404
