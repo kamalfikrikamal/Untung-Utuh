@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../src/App';
 
+// Allow ProtectedRoute to pass (simulate authenticated user)
+vi.mock('@/utils/storage', () => ({
+  storage: { getToken: () => 'fake-token', setToken: vi.fn(), clearToken: vi.fn() },
+}));
+
 // Mock lazy-loaded page components so routes resolve synchronously
 vi.mock('@/pages/Dashboard', () => ({ default: () => <div>Dashboard Page</div> }));
 vi.mock('@/pages/StorePage', () => ({ default: () => <div>Store Page</div> }));

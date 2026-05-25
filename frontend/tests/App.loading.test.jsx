@@ -7,6 +7,11 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../src/App';
 
+// Allow ProtectedRoute to pass (simulate authenticated user)
+vi.mock('@/utils/storage', () => ({
+  storage: { getToken: () => 'fake-token', setToken: vi.fn(), clearToken: vi.fn() },
+}));
+
 // Never-resolving mocks keep Dashboard/StorePage/NotFound perpetually loading
 // so that React's Suspense always renders the <PageLoader /> fallback.
 vi.mock('@/pages/Dashboard', async () => {
