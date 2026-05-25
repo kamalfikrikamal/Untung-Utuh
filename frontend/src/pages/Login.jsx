@@ -11,7 +11,7 @@ import { storage } from '../utils/storage';
 import { toast } from 'sonner';
 
 const loginSchema = z.object({
-  email: z.string().email('Format email tidak valid'),
+  email: z.email({ message: 'Format email tidak valid' }),
   password: z.string().min(6, 'Password minimal 6 karakter'),
 });
 

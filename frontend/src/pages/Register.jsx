@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter').max(50),
-  email: z.string().email('Format email tidak valid'),
+  email: z.email({ message: 'Format email tidak valid' }),
   password: z.string().min(8, 'Password minimal 8 karakter'),
   confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
