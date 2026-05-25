@@ -6,6 +6,7 @@ import { Skeleton } from './components/ui/Skeleton';
 
 // Lazy loading pages
 const Landing = lazy(() => import('./pages/Landing'));
+const Fitur = lazy(() => import('./pages/Fitur'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route element={<AppShell />}>
           <Route path="/" element={<Landing />} />
+          <Route path="/fitur" element={<Fitur />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
