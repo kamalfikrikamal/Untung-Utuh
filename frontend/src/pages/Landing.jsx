@@ -128,7 +128,7 @@ export default function Landing() {
         <div className="relative z-10 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary-700 text-sm font-medium mb-8">
             <span className="h-2 w-2 rounded-full bg-primary-500 animate-pulse" />
-            Mulai jualan online gratis sekarang
+            <span>Mulai jualan online gratis sekarang</span>
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
