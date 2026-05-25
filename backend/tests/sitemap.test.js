@@ -42,3 +42,31 @@ describe('Sitemap and robots routes', () => {
     delete process.env.APP_URL;
   });
 });
+
+describe('Sitemap error handling', () => {
+  let appWithError;
+
+  beforeAll(() => {
+    jest.resetModules();
+    jest.doMock('sitemap', () => ({
+      SitemapStream: jest.fn().mockImplementation(() => ({
+        on: jest.fn(),
+        write: jest.fn(),
+        end: jest.fn(),
+        pipe: jest.fn().mockReturnThis(),
+      })),
+      streamToPromise: jest.fn().mockRejectedValue(new Error('stream failed')),
+    }));
+    appWithError = require('../src/app');
+  });
+
+  afterAll(() => {
+    jest.resetModules();
+    jest.dontMock('sitemap');
+  });
+
+  it('GET /api/sitemap.xml calls next(err) when streamToPromise rejects', async () => {
+    const res = await request(appWithError).get('/api/sitemap.xml');
+    expect(res.statusCode).toBe(500);
+  });
+});

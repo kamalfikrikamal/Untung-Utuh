@@ -83,3 +83,13 @@ describe('api interceptors', () => {
     });
   });
 });
+
+describe('api module with custom VITE_API_URL', () => {
+  it('uses VITE_API_URL when env is set', async () => {
+    vi.stubEnv('VITE_API_URL', 'https://custom-api.example.com/api');
+    vi.resetModules();
+    const { default: customApi } = await import('@/utils/api');
+    expect(customApi.defaults.baseURL).toBe('https://custom-api.example.com/api');
+    vi.unstubAllEnvs();
+  });
+});

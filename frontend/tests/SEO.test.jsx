@@ -34,4 +34,10 @@ describe('SEO Component', () => {
     render(<SEO title="Test" />);
     expect(document.head).toBeTruthy();
   });
+
+  it('uses provided image prop as og:image instead of default', () => {
+    render(<SEO title="Product" image="https://cdn.example.com/product.jpg" />);
+    const ogImageMeta = document.head.querySelector('meta[property="og:image"]');
+    expect(ogImageMeta?.getAttribute('content')).toBe('https://cdn.example.com/product.jpg');
+  });
 });

@@ -190,4 +190,39 @@ describe('ProductForm', () => {
     expect(clickSpy).toHaveBeenCalled();
     clickSpy.mockRestore();
   });
+
+  it('cleanup effect runs on unmount without throwing', async () => {
+    const { unmount } = render(<ProductForm onSubmit={onSubmit} loading={false} />);
+    const fileInput = document.querySelector('input[type="file"]');
+    const file = new File(['img'], 'cleanup.jpg', { type: 'image/jpeg' });
+
+    // Add a local file — creates an object URL
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    // Unmounting triggers the cleanup effect (localFiles is captured at mount = []
+    // due to [] deps array, so revokeObjectURL is not called, but the effect runs)
+    expect(() => unmount()).not.toThrow();
+  });
+
+  it('re-initialises form when initial prop changes from null to a product', async () => {
+    const { rerender } = render(
+      <ProductForm initial={null} onSubmit={onSubmit} loading={false} />
+    );
+    expect(screen.getByPlaceholderText('Enter product name').value).toBe('');
+
+    const product = {
+      name: 'Updated',
+      description: 'Desc',
+      price: 20000,
+      stock: 5,
+      category: 'electronics',
+      images: [],
+    };
+    rerender(<ProductForm initial={product} onSubmit={onSubmit} loading={false} />);
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Updated')).toBeTruthy();
+    });
+  });
 });

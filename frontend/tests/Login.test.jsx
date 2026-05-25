@@ -98,4 +98,17 @@ describe('Login', () => {
       expect(storage.setToken).not.toHaveBeenCalled();
     });
   });
+
+  it('catches and logs error when api.post rejects', async () => {
+    api.post.mockRejectedValue(new Error('Network error'));
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderLogin();
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'user@example.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.submit(screen.getByRole('button', { name: /Log In/i }).closest('form'));
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Login error', expect.any(Error));
+    });
+    consoleSpy.mockRestore();
+  });
 });

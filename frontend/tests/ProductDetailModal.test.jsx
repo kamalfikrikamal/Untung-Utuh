@@ -178,4 +178,22 @@ describe('ProductDetailModal', () => {
       screen.queryByRole('button', { name: /Order via WhatsApp/i })
     ).toBeNull();
   });
+
+  it('does not call trackEvent for wa_order when storeId is absent but whatsapp is provided', async () => {
+    render(
+      <ProductDetailModal
+        product={baseProduct}
+        onClose={onClose}
+        whatsapp="081234567890"
+      />
+    );
+    const waBtn = screen.getByRole('button', { name: /Order via WhatsApp/i });
+    await act(async () => {
+      fireEvent.click(waBtn);
+    });
+    expect(trackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'wa_order' })
+    );
+    expect(globalThis.open).toHaveBeenCalled();
+  });
 });

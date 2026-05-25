@@ -107,4 +107,19 @@ describe('Register', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
   });
+
+  it('catches and logs error when api.post rejects', async () => {
+    api.post.mockRejectedValue(new Error('Server error'));
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderRegister();
+    fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'John Doe' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'user@example.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
+    fireEvent.submit(screen.getByRole('button', { name: /Sign Up/i }).closest('form'));
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Register error', expect.any(Error));
+    });
+    consoleSpy.mockRestore();
+  });
 });

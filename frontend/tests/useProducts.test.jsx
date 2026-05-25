@@ -213,4 +213,16 @@ describe('useInfiniteProducts', () => {
     expect(result.current.isPending).toBe(true);
     expect(productService.getAll).not.toHaveBeenCalled();
   });
+
+  it('getNextPageParam returns next page number when page < pages', async () => {
+    // First call returns page 1 of 3 — getNextPageParam should return 2
+    productService.getAll.mockResolvedValue({
+      data: { products: [{ _id: '1', name: 'A' }], pagination: { page: 1, pages: 3 } },
+    });
+    const { result } = renderHook(() => useInfiniteProducts({ isActive: 'true' }), {
+      wrapper: createWrapper(),
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.hasNextPage).toBe(true);
+  });
 });

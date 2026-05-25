@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StorePage from '@/pages/StorePage';
 
@@ -35,8 +35,13 @@ vi.mock('@/components/store/StoreProductCard', () => ({
 }));
 
 vi.mock('@/components/store/ProductDetailModal', () => ({
-  default: ({ product }) =>
-    product ? <div data-testid="product-modal">{product.name}</div> : null,
+  default: ({ product, onClose }) =>
+    product ? (
+      <div data-testid="product-modal">
+        {product.name}
+        <button data-testid="close-modal" onClick={onClose}>Close</button>
+      </div>
+    ) : null,
 }));
 
 vi.mock('@/components/ui/Skeleton', () => ({
@@ -46,9 +51,18 @@ vi.mock('@/components/ui/Skeleton', () => ({
 import { useStoreBySlug } from '@/hooks/useStore';
 import { useInfiniteProducts } from '@/hooks/useProducts';
 
-// IntersectionObserver mock — must be a class (not vi.fn()) to be used as a constructor
+// IntersectionObserver mock — calls the callback immediately on observe()
+// so intersection-related code paths are exercised in tests.
+let lastIntersectionCallback;
 class MockIntersectionObserver {
-  observe() {}
+  constructor(cb) {
+    this._cb = cb;
+    lastIntersectionCallback = cb;
+  }
+  observe() {
+    // Simulate "not intersecting" by default (hasNextPage is false in most tests)
+    this._cb([{ isIntersecting: false }]);
+  }
   disconnect() {}
 }
 globalThis.IntersectionObserver = MockIntersectionObserver;
@@ -167,5 +181,50 @@ describe('StorePage', () => {
     render(<StorePage />);
     fireEvent.click(screen.getByTestId('product-card'));
     expect(screen.getByTestId('product-modal')).toBeInTheDocument();
+  });
+
+  it('closes product detail modal when onClose is called', () => {
+    useInfiniteProducts.mockReturnValue({
+      ...defaultProductsResult,
+      data: { pages: [{ data: { products: [mockProduct] } }] },
+    });
+    render(<StorePage />);
+    fireEvent.click(screen.getByTestId('product-card'));
+    expect(screen.getByTestId('product-modal')).toBeInTheDocument();
+    // Trigger onClose — covers the arrow function at L178
+    fireEvent.click(screen.getByTestId('close-modal'));
+    expect(screen.queryByTestId('product-modal')).toBeNull();
+  });
+
+  it('useEffect sentinel guard returns early when products are loading (no sentinel div)', async () => {
+    const { act } = await import('@testing-library/react');
+    useInfiniteProducts.mockReturnValue({
+      ...defaultProductsResult,
+      data: undefined,
+      isLoading: true,
+    });
+    const { container } = render(<StorePage />);
+    // Flush all pending effects — sentinelRef.current is null when skeleton renders
+    await act(async () => {});
+    // Component rendered skeletons without the sentinel div; effect should have returned early
+    expect(container.querySelector('[aria-hidden="true"]')).toBeNull();
+  });
+
+  it('calls fetchNextPage when sentinel becomes visible and hasNextPage is true', async () => {
+    const fetchNextPage = vi.fn();
+    useInfiniteProducts.mockReturnValue({
+      ...defaultProductsResult,
+      data: { pages: [{ data: { products: [mockProduct] } }] },
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage,
+    });
+    render(<StorePage />);
+    // lastIntersectionCallback was captured when observe() was called;
+    // re-trigger it with isIntersecting: true
+    await act(async () => {
+      lastIntersectionCallback([{ isIntersecting: true }]);
+    });
+    expect(fetchNextPage).toHaveBeenCalled();
   });
 });

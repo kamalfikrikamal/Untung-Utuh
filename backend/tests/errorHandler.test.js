@@ -94,6 +94,17 @@ describe('errorHandler middleware', () => {
     expect(res.status).toHaveBeenCalledWith(409);
   });
 
+  it('handles duplicate key error when keyValue is undefined (covers || {} fallback)', () => {
+    const err = new Error('duplicate key error');
+    err.code = 11000;
+    // err.keyValue is undefined — triggers the || {} fallback
+    errorHandler(err, req, res, next);
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Duplicate value for field: undefined' })
+    );
+  });
+
   it('handles Mongoose ValidationError with 422', () => {
     const err = new Error('validation failed');
     err.name = 'ValidationError';

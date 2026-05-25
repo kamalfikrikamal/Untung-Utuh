@@ -127,4 +127,47 @@ describe('Auth Routes', () => {
       expect(updated.password).toBe(originalHash);
     });
   });
+
+  describe('Additional authController coverage', () => {
+    it('returns 403 when account is deactivated', async () => {
+      await request(app).post('/api/auth/register').send(testUser);
+
+      const User = require('../src/models/User');
+      await User.updateOne({ email: testUser.email }, { isActive: false });
+
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: testUser.email, password: testUser.password });
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.message).toContain('deactivated');
+    });
+
+    it('calls next(err) when User.create throws unexpectedly in register', async () => {
+      const User = require('../src/models/User');
+      const createSpy = jest
+        .spyOn(User, 'create')
+        .mockRejectedValueOnce(new Error('DB connection lost'));
+
+      const res = await request(app).post('/api/auth/register').send(testUser);
+
+      expect(res.statusCode).toBe(500);
+      createSpy.mockRestore();
+    });
+
+    it('uses JWT_EXPIRES_IN env when set', async () => {
+      const savedExpiry = process.env.JWT_EXPIRES_IN;
+      process.env.JWT_EXPIRES_IN = '1h';
+
+      await request(app).post('/api/auth/register').send(testUser);
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: testUser.email, password: testUser.password });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('token');
+
+      process.env.JWT_EXPIRES_IN = savedExpiry;
+    });
+  });
 });

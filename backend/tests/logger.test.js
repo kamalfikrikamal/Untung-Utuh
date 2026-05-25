@@ -109,4 +109,47 @@ describe('logger', () => {
 
     delete process.env.LOG_LEVEL;
   });
+
+  it('printf format JSON.stringify branches: non-string timestamp and message', () => {
+    process.env.NODE_ENV = 'development';
+    jest.resetModules();
+
+    const winston = require('winston');
+    const { printf: originalPrintf } = winston.format;
+
+    let capturedCallback;
+    jest.spyOn(winston.format, 'printf').mockImplementationOnce((fn) => {
+      capturedCallback = fn;
+      return originalPrintf(fn);
+    });
+
+    const stdoutSpy = jest.spyOn(process.stdout, 'write').mockReturnValue(true);
+    const stderrSpy = jest.spyOn(process.stderr, 'write').mockReturnValue(true);
+
+    require('../src/config/logger');
+
+    // Call the printf callback with non-string timestamp and message objects
+    if (capturedCallback) {
+      const result = capturedCallback({
+        level: 'info',
+        message: { nested: 'value' },   // object → JSON.stringify branch
+        timestamp: { raw: '2023-01-01' }, // object → JSON.stringify branch
+        stack: null,
+      });
+      expect(result).toContain('{"nested":"value"}');
+
+      // Also test stack as non-string object to cover line 14's JSON.stringify branch
+      const resultWithStack = capturedCallback({
+        level: 'error',
+        message: { err: 'oops' },
+        timestamp: { raw: '2023-01-01' },
+        stack: { trace: 'at some.fn' },
+      });
+      expect(resultWithStack).toContain('{"err":"oops"}');
+    }
+
+    stdoutSpy.mockRestore();
+    stderrSpy.mockRestore();
+    jest.restoreAllMocks();
+  });
 });

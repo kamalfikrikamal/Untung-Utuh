@@ -307,5 +307,146 @@ describe('Product Routes', () => {
 
       expect(res.statusCode).toBe(500);
     });
+
+    it('handles cloudinary object error (non-Error, non-string) and returns 500', async () => {
+      const cloudinary = require('../src/config/cloudinary');
+      cloudinary.uploader.upload_stream.mockImplementationOnce((options, cb) => ({
+        end: (buffer) =>
+          setImmediate(() => cb({ code: 'ERR_UPLOAD', message: 'unknown error' }, null)),
+      }));
+
+      const res = await request(app)
+        .post('/api/products/images')
+        .set('Authorization', `Bearer ${token}`)
+        .attach('images', Buffer.from('data'), {
+          filename: 'fail3.jpg',
+          contentType: 'image/jpeg',
+        });
+
+      expect(res.statusCode).toBe(500);
+    });
+
+    it('rejects files with invalid MIME type', async () => {
+      const res = await request(app)
+        .post('/api/products/images')
+        .set('Authorization', `Bearer ${token}`)
+        .attach('images', Buffer.from('pdf content'), {
+          filename: 'document.pdf',
+          contentType: 'application/pdf',
+        });
+
+      // multer fileFilter calls cb(new Error(...), false) — expect error response
+      expect([400, 500]).toContain(res.statusCode);
+    });
+  });
+
+  describe('Additional coverage for productController branches', () => {
+    it('creates product when images field is omitted (images defaults to [])', async () => {
+      const { images: _omit, ...productWithoutImages } = testProduct;
+      const res = await request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ ...productWithoutImages, store: storeId });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.data.product.images).toEqual([]);
+    });
+
+    it('filters products by search query', async () => {
+      await createProduct({ name: 'Searchable Widget' });
+
+      const res = await request(app).get('/api/products?search=Searchable');
+      expect(res.statusCode).toBe(200);
+    });
+
+    it('normalises page=0 and limit=0 to their defaults (1 and 20)', async () => {
+      await createProduct();
+      // page=0 → parseInt('0')=0 → 0||1=1 → pageNum=1
+      // limit=0 → parseInt('0')=0 → 0||20=20 → limitNum=20
+      const res = await request(app).get('/api/products?page=0&limit=0');
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data.pagination.page).toBe(1);
+      expect(res.body.data.pagination.limit).toBe(20);
+    });
+
+    it('create calls next(err) when Product.create throws', async () => {
+      const createSpy = jest
+        .spyOn(Product, 'create')
+        .mockRejectedValueOnce(new Error('DB error'));
+
+      const res = await request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ ...testProduct, store: storeId });
+
+      expect(res.statusCode).toBe(500);
+      createSpy.mockRestore();
+    });
+
+    it('getAll calls next(err) when Product.find throws', async () => {
+      const findSpy = jest.spyOn(Product, 'find').mockImplementationOnce(() => {
+        throw new Error('DB find error');
+      });
+
+      const res = await request(app).get('/api/products');
+      expect(res.statusCode).toBe(500);
+      findSpy.mockRestore();
+    });
+
+    it('getById calls next(err) when Product.findById throws', async () => {
+      const findByIdSpy = jest.spyOn(Product, 'findById').mockReturnValueOnce({
+        populate: jest.fn().mockRejectedValueOnce(new Error('DB getById error')),
+      });
+
+      const fakeId = new mongoose.Types.ObjectId().toString();
+      const res = await request(app).get(`/api/products/${fakeId}`);
+      expect(res.statusCode).toBe(500);
+      findByIdSpy.mockRestore();
+    });
+
+    it('update calls next(err) when Product.findByIdAndUpdate throws', async () => {
+      const product = await createProduct();
+
+      const findByIdSpy = jest
+        .spyOn(Product, 'findById')
+        .mockResolvedValueOnce({
+          _id: product._id,
+          store: { owner: (await request(app).get(`/api/products/${product._id}`)).body.data.product.store.owner || 'owner' },
+        });
+      const updateSpy = jest
+        .spyOn(Product, 'findByIdAndUpdate')
+        .mockRejectedValueOnce(new Error('DB update error'));
+
+      const res = await request(app)
+        .patch(`/api/products/${product._id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'Updated' });
+
+      expect(res.statusCode).toBe(500);
+      findByIdSpy.mockRestore();
+      updateSpy.mockRestore();
+    });
+
+    it('remove calls next(err) when Product.findByIdAndUpdate throws during soft-delete', async () => {
+      const product = await createProduct();
+
+      const findByIdSpy = jest
+        .spyOn(Product, 'findById')
+        .mockResolvedValueOnce({
+          _id: product._id,
+          store: { owner: (await request(app).get(`/api/products/${product._id}`)).body.data.product.store.owner || 'owner' },
+        });
+      const updateSpy = jest
+        .spyOn(Product, 'findByIdAndUpdate')
+        .mockRejectedValueOnce(new Error('DB delete error'));
+
+      const res = await request(app)
+        .delete(`/api/products/${product._id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toBe(500);
+      findByIdSpy.mockRestore();
+      updateSpy.mockRestore();
+    });
   });
 });

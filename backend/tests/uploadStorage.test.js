@@ -146,4 +146,19 @@ describe('uploadController internal cloudinaryStorage', () => {
       message: 'publicId is required',
     });
   });
+
+  it('_handleFile calls cb with error for disallowed MIME type', (done) => {
+    const req = { user: { _id: 'user-123' } };
+    const file = {
+      mimetype: 'application/pdf',
+      originalname: 'document.pdf',
+      stream: { pipe: jest.fn() },
+    };
+
+    capturedStorage._handleFile(req, file, (err) => {
+      expect(err).toBeInstanceOf(Error);
+      expect(err.message).toContain('Only image files');
+      done();
+    });
+  });
 });
