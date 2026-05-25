@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import {
@@ -31,7 +32,7 @@ function formatRupiah(num) {
 
 function RoiCalculator() {
   const [revenue, setRevenue] = useState(5_000_000);
-  const savings = revenue * 0.10;
+  const savings = revenue * 0.1;
   const annualSavings = savings * 12;
 
   return (
@@ -47,10 +48,11 @@ function RoiCalculator() {
       </div>
 
       <div className="mb-6">
-        <label className="text-sm font-medium text-gray-700 block mb-3">
+        <label htmlFor="revenue-slider" className="text-sm font-medium text-gray-700 block mb-3">
           Rata-rata pendapatan bulanan Anda
         </label>
         <input
+          id="revenue-slider"
           type="range"
           min={1_000_000}
           max={50_000_000}
@@ -297,6 +299,7 @@ const categories = [
 /* ── Feature Card ────────────────────────────────────────── */
 
 function FeatureCard({ Icon, title, description, bullets, iconBg, iconColor }) {
+
   return (
     <div className="flex flex-col p-6 rounded-2xl bg-gray-50 border border-transparent hover:bg-white hover:border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
       <div
@@ -317,6 +320,15 @@ function FeatureCard({ Icon, title, description, bullets, iconBg, iconColor }) {
     </div>
   );
 }
+
+FeatureCard.propTypes = {
+  Icon: PropTypes.elementType.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  bullets: PropTypes.arrayOf(PropTypes.string).isRequired,
+  iconBg: PropTypes.string.isRequired,
+  iconColor: PropTypes.string.isRequired,
+};
 
 /* ── Page ────────────────────────────────────────────────── */
 
