@@ -33,8 +33,8 @@ api.interceptors.response.use(
         storage.clearToken();
         toast.error('Session expired. Please log in again.');
         // If not already on login page, redirect
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
+        if (globalThis.location.pathname !== '/login') {
+          globalThis.location.href = '/login';
         }
       } else {
         toast.error(error.response.data?.message || 'An unexpected error occurred');
