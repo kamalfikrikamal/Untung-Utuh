@@ -56,7 +56,7 @@ const PricingFAQ = () => {
              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
                <button
                  onClick={() => handleToggle(index)}
-                 className="w-full px-6 py-4 flex items-center justify-between text-left focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                 className="w-full px-6 py-4 flex items-center justify-between text-left focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 cursor-pointer"
                >
                  <span className="text-lg font-medium text-gray-900">{faq.question}</span>
                  {openIndex === index ? (

@@ -160,12 +160,13 @@ const Pricing = () => {
 
           {/* Toggle Switch */}
           <div className="flex justify-center items-center gap-4 mb-12">
-            <span className={`text-sm font-semibold transition-colors duration-300 ${
+            <span className={`text-sm font-semibold transition-colors duration-300 select-none ${
               !isAnnual ? 'text-blue-600' : 'text-gray-400'
             }`}>Bulanan</span>
             <button
+              type="button"
               onClick={() => setIsAnnual(!isAnnual)}
-              className={`relative w-16 h-8 rounded-full shadow-inner focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 transition-all duration-300 ease-in-out ${
+              className={`relative w-16 h-8 rounded-full shadow-inner focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer focus:outline-none ${
                 isAnnual
                   ? 'bg-gradient-to-r from-amber-400 to-orange-400 shadow-amber-200'
                   : 'bg-gradient-to-r from-blue-400 to-cyan-400 shadow-blue-200'
@@ -177,7 +178,7 @@ const Pricing = () => {
                 } ${isAnnual ? 'shadow-amber-300/50' : 'shadow-blue-300/50'}`}
               />
             </button>
-            <span className={`text-sm font-semibold transition-colors duration-300 ${
+            <span className={`text-sm font-semibold transition-colors duration-300 select-none ${
               isAnnual ? 'text-amber-600' : 'text-gray-400'
             }`}>Tahunan</span>
             {isAnnual && (
