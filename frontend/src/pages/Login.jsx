@@ -16,6 +16,13 @@ const loginSchema = z.object({
 
 export default function Login() {
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (storage.getToken()) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
   });
