@@ -13,7 +13,6 @@ export function Navbar() {
           </Link>
           <div className="hidden md:flex ml-8 gap-6">
             <Link to="/fitur" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Fitur</Link>
-            <a href="/#cara-kerja" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Cara Kerja</a>
             <Link to="/harga" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Harga</Link>
           </div>
         </div>
