@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AppShell } from './components/Layout/AppShell';
+import { ScrollToTop } from './components/Layout/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Skeleton } from './components/ui/Skeleton';
 
@@ -26,6 +27,7 @@ function PageLoader() {
 function App() {
   return (
     <Suspense fallback={<PageLoader />}>
+      <ScrollToTop />
       <Routes>
         <Route element={<AppShell />}>
           <Route path="/" element={<Landing />} />
