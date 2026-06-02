@@ -14,7 +14,7 @@ export function Navbar() {
           <div className="hidden md:flex ml-8 gap-6">
             <Link to="/fitur" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Fitur</Link>
             <a href="/#cara-kerja" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Cara Kerja</a>
-            <button type="button" className="text-sm font-medium text-gray-400 cursor-default">Harga</button>
+            <Link to="/harga" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Harga</Link>
           </div>
         </div>
         <div className="flex items-center gap-4">
