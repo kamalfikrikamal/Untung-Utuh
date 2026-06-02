@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const footerLinks = {
   Produk: [
     { label: 'Fitur', href: '/fitur' },
-    { label: 'Harga', href: null },
+    { label: 'Harga', href: '/harga' },
     { label: 'Template Toko', href: null },
     { label: 'Demo', href: null },
   ],
