@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import SectionHeader from '../components/ui/SectionHeader';
+import FadeInSection from '../components/ui/FadeInSection';
 import {
   Zap,
   MessageCircle,
@@ -166,103 +167,114 @@ export default function Landing() {
       </section>
 
       {/* ── Stats Bar ────────────────────────────────────── */}
-      <section className="bg-primary-600 py-12">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-6 text-center">
-            {stats.map(({ value, label }) => (
-              <div key={label} className="flex flex-col items-center">
-                <p className="text-3xl sm:text-4xl font-extrabold text-white">{value}</p>
-                <p className="mt-1 text-sm text-primary-200 font-medium">{label}</p>
-              </div>
-            ))}
+      <FadeInSection>
+        <section className="bg-primary-600 py-12">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-3 gap-6 text-center">
+              {stats.map(({ value, label }, idx) => (
+                <FadeInSection key={label} delay={idx * 150}>
+                  <div className="flex flex-col items-center">
+                    <p className="text-3xl sm:text-4xl font-extrabold text-white">{value}</p>
+                    <p className="mt-1 text-sm text-primary-200 font-medium">{label}</p>
+                  </div>
+                </FadeInSection>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeInSection>
 
       {/* ── Why Us (3 core benefits) ─────────────────────── */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader
-            badge="Platform"
-            title="Mengapa pilih Untung Utuh?"
-            subtitle="Solusi toko online yang dirancang khusus untuk UMKM Indonesia."
-          />
+      <FadeInSection>
+        <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              badge="Platform"
+              title="Mengapa pilih Untung Utuh?"
+              subtitle="Solusi toko online yang dirancang khusus untuk UMKM Indonesia."
+            />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {features.map(({ Icon, title, description, iconBg, iconColor }) => (
-              <div
-                key={title}
-                className="flex flex-col p-8 rounded-3xl bg-white border border-gray-100 hover:border-primary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-sm"
-              >
-                <div className={`h-12 w-12 rounded-2xl ${iconBg} flex items-center justify-center mb-5 flex-shrink-0`}>
-                  <Icon className={`h-6 w-6 ${iconColor}`} />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
-                <p className="text-gray-500 leading-relaxed text-sm">{description}</p>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {features.map(({ Icon, title, description, iconBg, iconColor }, idx) => (
+                <FadeInSection key={title} delay={idx * 150}>
+                  <div className="flex flex-col p-8 rounded-3xl bg-white border border-gray-100 hover:border-primary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-sm h-full">
+                    <div className={`h-12 w-12 rounded-2xl ${iconBg} flex items-center justify-center mb-5 flex-shrink-0`}>
+                      <Icon className={`h-6 w-6 ${iconColor}`} />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+                    <p className="text-gray-500 leading-relaxed text-sm">{description}</p>
+                  </div>
+                </FadeInSection>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeInSection>
 
       {/* ── Value Proposition (6-grid) ───────────────────── */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader
-            badge="Fitur Unggulan"
-            title="Semua yang Anda butuhkan untuk jualan online"
-          />
+      <FadeInSection>
+        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              badge="Fitur Unggulan"
+              title="Semua yang Anda butuhkan untuk jualan online"
+            />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {valueProps.map(({ Icon, title, description, iconBg, iconColor }) => (
-              <div
-                key={title}
-                className="flex gap-4 p-6 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 hover:shadow-md transition-all duration-200"
-              >
-                <div className={`h-10 w-10 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                  <Icon className={`h-5 w-5 ${iconColor}`} />
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
-                </div>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {valueProps.map(({ Icon, title, description, iconBg, iconColor }, idx) => (
+                <FadeInSection key={title} delay={(idx % 6) * 100}>
+                  <div className="flex gap-4 p-6 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 hover:shadow-md transition-all duration-200 h-full">
+                    <div className={`h-10 w-10 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                      <Icon className={`h-5 w-5 ${iconColor}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
+                    </div>
+                  </div>
+                </FadeInSection>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeInSection>
 
       {/* ── How It Works ─────────────────────────────────── */}
-      <section id="cara-kerja" className="py-24 px-4 sm:px-6 lg:px-8 bg-primary-50">
-        <div className="max-w-5xl mx-auto">
-          <SectionHeader
-            badge="Cara Kerja"
-            title="Mulai jualan dalam 3 langkah mudah"
-          />
+      <FadeInSection>
+        <section id="cara-kerja" className="py-24 px-4 sm:px-6 lg:px-8 bg-primary-50">
+          <div className="max-w-5xl mx-auto">
+            <SectionHeader
+              badge="Cara Kerja"
+              title="Mulai jualan dalam 3 langkah mudah"
+            />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {steps.map(({ emoji, title, description }, idx) => (
-              <div key={title} className="flex flex-col items-center text-center">
-                <div className="relative mb-6">
-                  <div className="h-20 w-20 rounded-full bg-white border-2 border-primary-200 flex flex-col items-center justify-center shadow-sm">
-                    <span className="text-3xl leading-none">{emoji}</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {steps.map(({ emoji, title, description }, idx) => (
+                <FadeInSection key={title} delay={idx * 150}>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative mb-6">
+                      <div className="h-20 w-20 rounded-full bg-white border-2 border-primary-200 flex flex-col items-center justify-center shadow-sm">
+                        <span className="text-3xl leading-none">{emoji}</span>
+                      </div>
+                      <span className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center shadow">
+                        {idx + 1}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed max-w-xs">{description}</p>
                   </div>
-                  <span className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center shadow">
-                    {idx + 1}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-xs">{description}</p>
-              </div>
-            ))}
+                </FadeInSection>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeInSection>
 
       {/* ── CTA Banner ───────────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative rounded-3xl bg-gradient-to-br from-primary-600 to-primary-800 px-8 py-14 sm:px-16 text-center overflow-hidden shadow-2xl">
+      <FadeInSection>
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative rounded-3xl bg-gradient-to-br from-primary-600 to-primary-800 px-8 py-14 sm:px-16 text-center overflow-hidden shadow-2xl">
             {/* Decorative blobs */}
             <div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/10" />
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-white/5" />
@@ -307,6 +319,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </FadeInSection>
 
     </div>
   );

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import HeroCTA from '../components/layout/HeroCTA';
 import SectionHeader from '../components/ui/SectionHeader';
+import FadeInSection from '../components/ui/FadeInSection';
 import { Button } from '../components/ui/Button';
 import {
   ArrowRight,
@@ -347,37 +348,49 @@ export default function Fitur() {
         >
           <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <SectionHeader
-              badge={cat.badge}
-              badgeClassName={cat.badgeColor}
-              title={cat.title}
-              subtitle={cat.description}
-              className="text-left mb-12 max-w-2xl"
-            />
+            <FadeInSection>
+              <SectionHeader
+                badge={cat.badge}
+                badgeClassName={cat.badgeColor}
+                title={cat.title}
+                subtitle={cat.description}
+                className="text-left mb-12 max-w-2xl"
+              />
+            </FadeInSection>
 
             {/* Feature Grid */}
-            {cat.isAnalytics ? (
-              <div className="space-y-5">
+            <FadeInSection delay={150}>
+              {cat.isAnalytics ? (
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {cat.features.map((feat, idx) => (
+                      <FadeInSection key={feat.title} delay={idx * 150}>
+                        <FeatureCard {...feat} />
+                      </FadeInSection>
+                    ))}
+                  </div>
+                  <FadeInSection delay={450}>
+                    <RoiCalculator />
+                  </FadeInSection>
+                </div>
+              ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {cat.features.map((feat) => (
-                    <FeatureCard key={feat.title} {...feat} />
+                  {cat.features.map((feat, idx) => (
+                    <FadeInSection key={feat.title} delay={idx * 150}>
+                      <FeatureCard {...feat} />
+                    </FadeInSection>
                   ))}
                 </div>
-                <RoiCalculator />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {cat.features.map((feat) => (
-                  <FeatureCard key={feat.title} {...feat} />
-                ))}
-              </div>
-            )}
+              )}
+            </FadeInSection>
           </div>
         </section>
       ))}
 
       {/* ── CTA ──────────────────────────────────────────── */}
-       <HeroCTA />
+      <FadeInSection>
+        <HeroCTA />
+      </FadeInSection>
     </div>
   );
 }
