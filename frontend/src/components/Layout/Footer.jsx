@@ -15,9 +15,9 @@ const footerLinks = {
     { label: 'Kontak', href: '/kontak' },
   ],
   Legal: [
-    { label: 'Kebijakan Privasi', href: null },
-    { label: 'Syarat & Ketentuan', href: null },
-    { label: 'Keamanan Data', href: null },
+    { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
+    { label: 'Syarat & Ketentuan', href: '/syarat-ketentuan' },
+    { label: 'Keamanan Data', href: '/keamanan-data' },
   ],
 };
 
