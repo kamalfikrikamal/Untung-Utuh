@@ -50,3 +50,5 @@ docker-compose.override.yml
 
 # SonarQube scanner cache
 .scannerwork/
+.aider*
+.roo
