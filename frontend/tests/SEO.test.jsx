@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render } from '@testing-library/react';
-import SEO from '../src/components/SEO/SEO';
+import SEO from '../src/components/seo/SEO';
 
 describe('SEO Component', () => {
   afterEach(() => {

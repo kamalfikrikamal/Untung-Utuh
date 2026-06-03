@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import Layout from '../src/components/Layout/Layout';
+import Layout from '../src/components/layout/Layout';
 
 describe('Layout', () => {
   afterEach(() => {
