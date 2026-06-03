@@ -10,6 +10,8 @@ const Landing = lazy(() => import('./pages/Landing'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Fitur = lazy(() => import('./pages/Fitur'));
 const TentangKami = lazy(() => import('./pages/TentangKami'));
+const Testimoni = lazy(() => import('./pages/Testimoni'));
+const Kontak = lazy(() => import('./pages/Kontak'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -35,6 +37,8 @@ function App() {
           <Route path="/harga" element={<Pricing />} />
           <Route path="/fitur" element={<Fitur />} />
           <Route path="/tentang-kami" element={<TentangKami />} />
+          <Route path="/testimoni" element={<Testimoni />} />
+          <Route path="/kontak" element={<Kontak />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/store/:slug" element={<StorePage />} />

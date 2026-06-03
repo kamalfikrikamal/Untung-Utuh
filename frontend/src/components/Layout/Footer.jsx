@@ -11,8 +11,8 @@ const footerLinks = {
   Perusahaan: [
     { label: 'Tentang Kami', href: '/tentang-kami' },
     { label: 'Blog UMKM', href: null },
-    { label: 'Testimoni', href: null },
-    { label: 'Kontak', href: null },
+    { label: 'Testimoni', href: '/testimoni' },
+    { label: 'Kontak', href: '/kontak' },
   ],
   Legal: [
     { label: 'Kebijakan Privasi', href: null },
