@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import SectionHeader from '../components/ui/SectionHeader';
 import {
   Zap,
   MessageCircle,
@@ -181,17 +182,11 @@ export default function Landing() {
       {/* ── Why Us (3 core benefits) ─────────────────────── */}
       <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-primary-600 uppercase tracking-[0.15em]">
-              Platform
-            </span>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-gray-900">
-              Mengapa pilih Untung Utuh?
-            </h2>
-            <p className="mt-4 text-gray-500 text-lg max-w-xl mx-auto font-light">
-              Solusi toko online yang dirancang khusus untuk UMKM Indonesia.
-            </p>
-          </div>
+          <SectionHeader
+            badge="Platform"
+            title="Mengapa pilih Untung Utuh?"
+            subtitle="Solusi toko online yang dirancang khusus untuk UMKM Indonesia."
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             {features.map(({ Icon, title, description, iconBg, iconColor }) => (
@@ -213,14 +208,10 @@ export default function Landing() {
       {/* ── Value Proposition (6-grid) ───────────────────── */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-primary-600 uppercase tracking-[0.15em]">
-              Fitur Unggulan
-            </span>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-gray-900">
-              Semua yang Anda butuhkan untuk jualan online
-            </h2>
-          </div>
+          <SectionHeader
+            badge="Fitur Unggulan"
+            title="Semua yang Anda butuhkan untuk jualan online"
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {valueProps.map(({ Icon, title, description, iconBg, iconColor }) => (
@@ -244,14 +235,10 @@ export default function Landing() {
       {/* ── How It Works ─────────────────────────────────── */}
       <section id="cara-kerja" className="py-24 px-4 sm:px-6 lg:px-8 bg-primary-50">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-primary-600 uppercase tracking-[0.15em]">
-              Cara Kerja
-            </span>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-gray-900">
-              Mulai jualan dalam 3 langkah mudah
-            </h2>
-          </div>
+          <SectionHeader
+            badge="Cara Kerja"
+            title="Mulai jualan dalam 3 langkah mudah"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {steps.map(({ emoji, title, description }, idx) => (

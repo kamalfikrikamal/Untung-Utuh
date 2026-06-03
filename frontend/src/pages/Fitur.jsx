@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import HeroCTA from '../components/layout/HeroCTA';
+import SectionHeader from '../components/ui/SectionHeader';
 import { Button } from '../components/ui/Button';
 import {
   ArrowRight,
@@ -346,13 +347,13 @@ export default function Fitur() {
         >
           <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <div className="mb-12 max-w-2xl">
-              <span className={`text-xs font-bold uppercase tracking-[0.15em] ${cat.badgeColor}`}>
-                {cat.badge}
-              </span>
-              <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">{cat.title}</h2>
-              <p className="mt-3 text-gray-500 leading-relaxed">{cat.description}</p>
-            </div>
+            <SectionHeader
+              badge={cat.badge}
+              badgeClassName={cat.badgeColor}
+              title={cat.title}
+              subtitle={cat.description}
+              className="text-left mb-12 max-w-2xl"
+            />
 
             {/* Feature Grid */}
             {cat.isAnalytics ? (
