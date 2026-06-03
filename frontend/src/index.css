@@ -6,3 +6,68 @@
     @apply bg-gray-50 text-gray-900 font-sans antialiased;
   }
 }
+
+/* ── Prose styles for legal / long-form pages ──────────── */
+@layer components {
+  .prose-content h2 {
+    @apply text-2xl sm:text-3xl font-bold text-gray-900 mt-14 mb-4 pt-0;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-content h3 {
+    @apply text-lg font-semibold text-gray-800 mt-8 mb-3;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-content h4 {
+    @apply text-base font-semibold text-gray-700 mt-6 mb-2;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-content p {
+    @apply text-gray-600 leading-relaxed mb-4;
+  }
+
+  .prose-content ul {
+    @apply space-y-2 mb-6 pl-0 list-none;
+  }
+
+  .prose-content ol {
+    @apply space-y-2 mb-6 pl-0 list-none;
+  }
+
+  .prose-content li {
+    @apply text-gray-600 leading-relaxed pl-6 relative;
+  }
+
+  .prose-content ul li::before {
+    content: '•';
+    @apply absolute left-0 text-primary-500 font-bold;
+  }
+
+  .prose-content ol li {
+    @apply pl-8;
+    counter-increment: list-counter;
+  }
+
+  .prose-content ol li::before {
+    content: counter(list-counter) '.';
+    @apply absolute left-0 text-primary-600 font-semibold text-sm;
+  }
+
+  .prose-content ol {
+    counter-reset: list-counter;
+  }
+
+  .prose-content strong {
+    @apply font-semibold text-gray-800;
+  }
+
+  .prose-content a {
+    @apply text-primary-600 underline hover:text-primary-700 transition-colors;
+  }
+
+  .prose-content blockquote {
+    @apply border-l-4 border-primary-200 pl-4 py-1 my-6 text-gray-500 italic bg-primary-50/40 rounded-r-lg;
+  }
+}
