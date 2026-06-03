@@ -265,189 +265,234 @@ node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 
 ```
 untung-utuh/
-├── 📄 docker-compose.yml           # Docker: environment development
-├── 📄 docker-compose.staging.yml   # Docker: environment staging
-├── 📄 docker-compose.prod.yml      # Docker: environment production
-├── 📄 Makefile                     # Shortcut perintah Docker & testing
-├── 📄 .env.example                 # Template variabel Docker Compose
+├── 📄 docker-compose.yml              # Docker: environment development
+├── 📄 docker-compose.staging.yml      # Docker: environment staging
+├── 📄 docker-compose.prod.yml         # Docker: environment production
+├── 📄 Makefile                        # Shortcut perintah Docker & testing
+├── 📄 .env.example                    # Template variabel Docker Compose
+├── 📄 sonar-project.properties        # Konfigurasi SonarQube
 │
-├── 📁 backend/                     # Express API Server
-│   ├── 📄 server.js                # Entry point
-│   ├── 📄 Dockerfile               # Image production
-│   ├── 📄 Dockerfile.dev           # Image development (hot reload)
-│   ├── 📄 jest.config.js           # Konfigurasi Jest
-│   ├── 📄 .env.example             # Template environment backend
+├── 📁 backend/                        # Express API Server
+│   ├── 📄 server.js                   # Entry point
+│   ├── 📄 app.js                      # Setup Express app (symlink src/app.js)
+│   ├── 📄 _debug.js                   # Script debug untuk testing
+│   ├── 📄 Dockerfile                  # Image production
+│   ├── 📄 Dockerfile.dev              # Image development (hot reload)
+│   ├── 📄 jest.config.js              # Konfigurasi Jest
+│   ├── 📄 package.json                # Dependencies backend
+│   ├── 📄 .env.example                # Template environment backend
+│   ├── 📄 .env                        # Environment development
+│   ├── 📄 .env.production             # Environment production
+│   ├── 📄 .env.staging                # Environment staging
+│   ├── 📁 logs/                       # Log Winston (auto-generated)
+│   ├── 📁 coverage/                   # Laporan coverage Jest
 │   └── 📁 src/
-│       ├── 📄 app.js               # Setup Express app
 │       ├── 📁 config/
-│       │   ├── cloudinary.js       # Konfigurasi Cloudinary
-│       │   ├── database.js         # Koneksi MongoDB
-│       │   └── logger.js           # Konfigurasi Winston
+│       │   ├── cloudinary.js          # Konfigurasi Cloudinary
+│       │   ├── database.js            # Koneksi MongoDB
+│       │   └── logger.js              # Konfigurasi Winston
 │       ├── 📁 controllers/
-│       │   ├── authController.js   # Logic autentikasi
-│       │   ├── storeController.js  # Logic CRUD toko
-│       │   ├── productController.js# Logic CRUD produk + upload gambar
+│       │   ├── authController.js      # Logic autentikasi
+│       │   ├── storeController.js     # Logic CRUD toko
+│       │   ├── productController.js   # Logic CRUD produk + upload gambar
 │       │   ├── analyticsController.js # Logic event tracking & summary
-│       │   └── uploadController.js # Logic upload file umum
+│       │   └── uploadController.js    # Logic upload file umum
 │       ├── 📁 middleware/
-│       │   ├── auth.js             # JWT protect middleware
-│       │   ├── cors.js             # CORS middleware
-│       │   ├── errorHandler.js     # Global error handler
-│       │   ├── rateLimiter.js      # Rate limiting (auth & analytics)
-│       │   └── validate.js         # Zod validation middleware
+│       │   ├── auth.js                # JWT protect middleware
+│       │   ├── cors.js                # CORS middleware
+│       │   ├── errorHandler.js        # Global error handler
+│       │   ├── rateLimiter.js         # Rate limiting (auth & analytics)
+│       │   └── validate.js            # Zod validation middleware
 │       ├── 📁 models/
-│       │   ├── User.js             # Mongoose User schema
-│       │   ├── Store.js            # Mongoose Store schema
-│       │   ├── Product.js          # Mongoose Product schema
-│       │   └── Analytics.js        # Mongoose Analytics schema (TTL 90d)
+│       │   ├── User.js                # Mongoose User schema
+│       │   ├── Store.js               # Mongoose Store schema
+│       │   ├── Product.js             # Mongoose Product schema
+│       │   └── Analytics.js           # Mongoose Analytics schema (TTL 90d)
 │       ├── 📁 routes/
-│       │   ├── index.js            # Router utama
-│       │   ├── auth.js             # Route autentikasi
-│       │   ├── store.js            # Route toko
-│       │   ├── product.js          # Route produk
-│       │   ├── analytics.js        # Route analytics
-│       │   ├── upload.js           # Route upload file
-│       │   ├── health.js           # Health check endpoint
-│       │   └── sitemap.js          # Sitemap XML generator
+│       │   ├── index.js               # Router utama
+│       │   ├── auth.js                # Route autentikasi
+│       │   ├── store.js               # Route toko
+│       │   ├── product.js             # Route produk
+│       │   ├── analytics.js           # Route analytics
+│       │   ├── upload.js              # Route upload file
+│       │   ├── health.js              # Health check endpoint
+│       │   └── sitemap.js             # Sitemap XML generator
 │       └── 📁 validators/
-│           ├── store.js            # Zod schema validasi toko
-│           ├── product.js          # Zod schema validasi produk
-│           └── analytics.js        # Zod schema validasi analytics
+│           ├── store.js               # Zod schema validasi toko
+│           ├── product.js             # Zod schema validasi produk
+│           └── analytics.js           # Zod schema validasi analytics
 │   └── 📁 tests/
-│       ├── setup.js                    # Setup Jest + MongoDB in-memory
-│       ├── app.test.js                 # Test Express app & middleware
-│       ├── auth.test.js                # Test autentikasi
-│       ├── cloudinary.test.js          # Test konfigurasi Cloudinary
-│       ├── cors.test.js                # Test CORS middleware
-│       ├── database.test.js            # Test koneksi database
-│       ├── errorHandler.test.js        # Test global error handler
-│       ├── health.test.js              # Test health check endpoint
-│       ├── logger.test.js              # Test konfigurasi logger
-│       ├── rateLimiter.test.js         # Test rate limiting
-│       ├── sitemap.test.js             # Test sitemap generator
-│       ├── validate.test.js            # Test Zod validation middleware
-│       ├── Store.test.js               # Test Mongoose Store model
-│       ├── analyticsController.test.js # Test analytics controller
-│       ├── analyticsValidator.test.js  # Test analytics Zod validator
-│       ├── productController.test.js   # Test product controller
-│       ├── storeController.test.js     # Test store controller
-│       ├── uploadController.test.js    # Test upload controller
-│       └── uploadStorage.test.js       # Test upload storage
+│       ├── setup.js                        # Setup Jest + MongoDB in-memory
+│       ├── app.test.js                     # Test Express app & middleware
+│       ├── auth.test.js                    # Test autentikasi
+│       ├── cloudinary.test.js              # Test konfigurasi Cloudinary
+│       ├── cors.test.js                    # Test CORS middleware
+│       ├── database.test.js                # Test koneksi database
+│       ├── errorHandler.test.js            # Test global error handler
+│       ├── health.test.js                  # Test health check endpoint
+│       ├── logger.test.js                  # Test konfigurasi logger
+│       ├── rateLimiter.test.js             # Test rate limiting
+│       ├── sitemap.test.js                 # Test sitemap generator
+│       ├── validate.test.js                # Test Zod validation middleware
+│       ├── Store.test.js                   # Test Mongoose Store model
+│       ├── analyticsController.test.js     # Test analytics controller
+│       ├── analyticsValidator.test.js      # Test analytics Zod validator
+│       ├── productController.test.js       # Test product controller
+│       ├── storeController.test.js         # Test store controller
+│       ├── uploadController.test.js        # Test upload controller
+│       └── uploadStorage.test.js           # Test upload storage
 │
-├── 📁 frontend/                    # React 19 + Vite App
-│   ├── 📄 index.html               # HTML entry point
-│   ├── 📄 vite.config.js           # Konfigurasi Vite   ├── 📄 tailwind.config.js       # Konfigurasi Tailwind CSS v4 + color tokens│   ├── 📄 eslint.config.js         # Konfigurasi ESLint
-│   ├── 📄 Dockerfile               # Image production (Nginx)
-│   ├── 📄 Dockerfile.dev           # Image development (hot reload)
-│   ├── 📄 nginx.conf               # Konfigurasi Nginx (production)
-│   ├── 📄 .env.example             # Template environment frontend
+├── 📁 frontend/                       # React 19 + Vite App
+│   ├── 📄 index.html                  # HTML entry point
+│   ├── 📄 vite.config.js              # Konfigurasi Vite
+│   ├── 📄 tailwind.config.js          # Konfigurasi Tailwind CSS v4 + color tokens
+│   ├── 📄 eslint.config.js            # Konfigurasi ESLint
+│   ├── 📄 Dockerfile                  # Image production (Nginx)
+│   ├── 📄 Dockerfile.dev              # Image development (hot reload)
+│   ├── 📄 nginx.conf                  # Konfigurasi Nginx (production)
+│   ├── 📄 package.json                # Dependencies frontend
+│   ├── 📄 .env.example                # Template environment frontend
 │   ├── 📁 public/
-│   │   ├── manifest.webmanifest    # PWA web app manifest
-│   │   ├── sw.js                   # Service worker (cache-first strategy)
-│   │   ├── offline.html            # Halaman fallback offline
-│   │   └── icons/                  # App icons (SVG, maskable)
+│   │   ├── manifest.webmanifest       # PWA web app manifest
+│   │   ├── sw.js                      # Service worker (cache-first strategy)
+│   │   ├── offline.html               # Halaman fallback offline
+│   │   └── 📁 icons/
+│   │       ├── icon.svg               # App icon SVG
+│   │       └── maskable-icon.svg      # Maskable icon PWA
 │   └── 📁 src/
-│       ├── 📄 main.jsx             # Entry point React + SW registration
-│       ├── 📄 App.jsx              # Root component & routing (lazy)
-│       ├── 📄 index.css             # Global styles + Tailwind v4 directives
+│       ├── 📄 main.jsx                # Entry point React + SW registration
+│       ├── 📄 App.jsx                 # Root component & routing (lazy)
+│       ├── 📄 index.css               # Global styles + Tailwind v4 directives
 │       ├── 📁 components/
-│       │   ├── 📄 ErrorBoundary.jsx  # Error boundary global
-│       │   ├── 📄 ProtectedRoute.jsx # Guard route autentikasi
-│       │   ├── Layout/
-│       │   │   ├── AppShell.jsx      # Shell utama (Navbar + Sidebar + Footer)
-│       │   │   ├── Navbar.jsx        # Navigasi atas (landing & publik)
-│       │   │   ├── Sidebar.jsx       # Sidebar dashboard seller
-│       │   │   ├── Footer.jsx        # Footer landing page
-│       │   │   └── Layout.jsx        # Layout fallback
-│       │   ├── SEO/                  # SEO metadata (React 19 native)
-│       │   ├── products/
-│       │   │   ├── ProductCard.jsx   # Kartu produk di dashboard
-│       │   │   └── ProductForm.jsx   # Form buat/edit produk
-│       │   ├── store/
-│       │   │   ├── StoreHeader.jsx        # Header profil toko publik
-│       │   │   ├── StoreProductCard.jsx   # Kartu produk di halaman toko
-│       │   │   └── ProductDetailModal.jsx # Modal detail produk + WA order
-│       │   └── ui/
-│       │       ├── Button.jsx        # Tombol reusable (default, outline, ghost)
-│       │       ├── Input.jsx         # Input field dengan validasi
-│       │       ├── Label.jsx         # Label form
-│       │       ├── FormField.jsx     # Wrapper Label + Input untuk form fields
-│       │       ├── Alert.jsx         # Komponen notifikasi/alert
-│       │       ├── Toast.jsx         # Toast notification
-│       │       ├── Skeleton.jsx      # Loading skeleton
-│       │       ├── LazyImage.jsx     # Gambar lazy-load dengan blur
-│       │       ├── Modal.jsx         # Base modal component
-│       │       ├── ConfirmDialog.jsx  # Dialog konfirmasi hapus
-│       │       ├── OfflineBanner.jsx  # Banner status offline
-│       │       └── InstallPrompt.jsx  # Prompt install PWA
+│       │   ├── 📄 ErrorBoundary.jsx     # Error boundary global
+│       │   ├── 📄 ProtectedRoute.jsx    # Guard route autentikasi
+│       │   ├── 📁 layout/
+│       │   │   ├── AppShell.jsx         # Shell utama (Navbar + Sidebar + Footer)
+│       │   │   ├── Navbar.jsx           # Navigasi atas (landing & publik)
+│       │   │   ├── Sidebar.jsx          # Sidebar dashboard seller
+│       │   │   ├── Footer.jsx           # Footer landing page
+│       │   │   ├── Layout.jsx           # Layout fallback
+│       │   │   ├── HeroCTA.jsx          # Hero CTA section landing page
+│       │   │   ├── LegalPageLayout.jsx  # Layout dua kolom untuk halaman legal
+│       │   │   └── ScrollToTop.jsx      # Scroll-to-top otomatis route change
+│       │   ├── 📁 pricing/
+│       │   │   ├── PricingCard.jsx      # Kartu paket harga langganan
+│       │   │   ├── PricingFAQ.jsx       # FAQ harga langganan
+│       │   │   └── TestimonialCard.jsx  # Kartu testimoni pelanggan
+│       │   ├── 📁 seo/
+│       │   │   └── SEO.jsx             # SEO metadata (React Helmet)
+│       │   ├── 📁 products/
+│       │   │   ├── ProductCard.jsx      # Kartu produk di dashboard
+│       │   │   └── ProductForm.jsx      # Form buat/edit produk
+│       │   ├── 📁 store/
+│       │   │   ├── StoreHeader.jsx           # Header profil toko publik
+│       │   │   ├── StoreProductCard.jsx      # Kartu produk di halaman toko
+│       │   │   └── ProductDetailModal.jsx    # Modal detail produk + WA order
+│       │   └── 📁 ui/
+│       │       ├── Alert.jsx            # Komponen notifikasi/alert
+│       │       ├── Button.jsx           # Tombol reusable (default, outline, ghost)
+│       │       ├── ConfirmDialog.jsx    # Dialog konfirmasi hapus
+│       │       ├── FadeInSection.jsx    # Animasi scroll fade-in
+│       │       ├── FormField.jsx        # Wrapper Label + Input untuk form fields
+│       │       ├── Input.jsx            # Input field dengan validasi
+│       │       ├── InstallPrompt.jsx    # Prompt install PWA
+│       │       ├── Label.jsx            # Label form
+│       │       ├── LazyImage.jsx        # Gambar lazy-load dengan blur
+│       │       ├── Modal.jsx            # Base modal component
+│       │       ├── OfflineBanner.jsx    # Banner status offline
+│       │       ├── SectionHeader.jsx    # Header section dengan dekorasi
+│       │       ├── Skeleton.jsx         # Loading skeleton
+│       │       └── Toast.jsx            # Toast notification
 │       ├── 📁 hooks/
-│       │   ├── useProducts.js      # React Query CRUD + infinite scroll
-│       │   ├── useStore.js         # React Query data toko
-│       │   ├── useUpload.js        # Upload gambar ke Cloudinary
-│       │   ├── useAnalytics.js     # Event tracking hooks
-│       │   ├── useDebounce.js      # Debounce input
-│       │   ├── useNetworkStatus.js # Online/offline detector
-│       │   └── useInstallPrompt.js # PWA install prompt handler
+│       │   ├── useAnalytics.js      # Event tracking hooks
+│       │   ├── useDebounce.js       # Debounce input
+│       │   ├── useInstallPrompt.js  # PWA install prompt handler
+│       │   ├── useNetworkStatus.js  # Online/offline detector
+│       │   ├── useProducts.js       # React Query CRUD + infinite scroll
+│       │   ├── useStore.js          # React Query data toko
+│       │   └── useUpload.js         # Upload gambar ke Cloudinary
 │       ├── 📁 pages/
-│       │   ├── Landing.jsx         # Landing page publik (UMKM Indonesia)
-│       │   ├── Fitur.jsx           # Halaman detail fitur platform
-│       │   ├── Login.jsx           # Halaman masuk
-│       │   ├── Register.jsx        # Halaman daftar akun
-│       │   ├── Dashboard.jsx       # Dashboard seller (CRUD produk)
-│       │   ├── StorePage.jsx       # Halaman toko publik
-│       │   └── NotFound.jsx        # Halaman 404
+│       │   ├── Dashboard.jsx        # Dashboard seller (CRUD produk)
+│       │   ├── Fitur.jsx            # Halaman detail fitur platform
+│       │   ├── KeamananData.jsx     # Halaman keamanan data pengguna
+│       │   ├── KebijakanPrivasi.jsx # Halaman kebijakan privasi
+│       │   ├── Kontak.jsx           # Halaman kontak & dukungan
+│       │   ├── Landing.jsx          # Landing page publik (UMKM Indonesia)
+│       │   ├── Login.jsx            # Halaman masuk
+│       │   ├── NotFound.jsx         # Halaman 404
+│       │   ├── Pricing.jsx          # Harga langganan & perbandingan
+│       │   ├── Register.jsx         # Halaman daftar akun
+│       │   ├── StorePage.jsx        # Halaman toko publik
+│       │   ├── SyaratKetentuan.jsx  # Halaman syarat & ketentuan
+│       │   ├── TentangKami.jsx      # Halaman tentang kami
+│       │   └── Testimoni.jsx        # Halaman testimoni pelanggan
 │       ├── 📁 services/
-│       │   ├── api.js              # Axios instance & interceptors
-│       │   ├── productService.js   # API calls produk
-│       │   ├── storeService.js     # API calls toko
-│       │   └── analyticsService.js # API calls analytics
+│       │   ├── api.js               # Axios instance & interceptors (sessionStorage)
+│       │   ├── analyticsService.js  # API calls analytics
+│       │   ├── productService.js    # API calls produk
+│       │   └── storeService.js      # API calls toko
+│       ├── 📁 data/
+│       │   ├── aboutData.js         # Data statis halaman tentang kami
+│       │   ├── contactData.js       # Data statis halaman kontak
+│       │   └── testimonialsData.js  # Data statis testimoni
+│       ├── 📁 styles/
+│       │   └── index.css            # Style tambahan (jika ada)
 │       └── 📁 utils/
-│           ├── cn.js               # Tailwind class merger (clsx + twMerge)
-│           └── storage.js          # Helper localStorage
+│           ├── api.js               # Axios instance & interceptors (localStorage)
+│           ├── cn.js                # Tailwind class merger (clsx + twMerge)
+│           └── storage.js           # Helper localStorage/sessionStorage
 │   └── 📁 tests/
-│       ├── setup.js                    # Setup Vitest + jsdom
-│       ├── api.test.js                 # Test Axios instance & interceptors
-│       ├── analyticsService.test.js    # Test analytics service
-│       ├── productService.test.js      # Test product service
-│       ├── storeService.test.js        # Test store service
-│       ├── App.test.jsx                # Test App component & routing
-│       ├── App.loading.test.jsx        # Test lazy loading
-│       ├── Dashboard.test.jsx          # Test Dashboard page
-│       ├── Login.test.jsx              # Test halaman login
-│       ├── Register.test.jsx           # Test halaman register
-│       ├── ProtectedRoute.test.jsx     # Test guard route autentikasi
-│       ├── StorePage.test.jsx          # Test halaman toko publik
-│       ├── NotFound.test.jsx           # Test halaman 404
-│       ├── Layout.test.jsx             # Test Layout component
-│       ├── SEO.test.jsx                # Test SEO component
-│       ├── ConfirmDialog.test.jsx      # Test dialog konfirmasi
-│       ├── InstallPrompt.test.jsx      # Test PWA install prompt
-│       ├── LazyImage.test.jsx          # Test lazy-load image
-│       ├── Modal.test.jsx              # Test modal component
-│       ├── OfflineBanner.test.jsx      # Test banner offline
-│       ├── Skeleton.test.jsx           # Test skeleton loading
-│       ├── ProductCard.test.jsx        # Test kartu produk dashboard
-│       ├── ProductDetailModal.test.jsx # Test modal detail produk
-│       ├── ProductForm.test.jsx        # Test form produk
-│       ├── StoreHeader.test.jsx        # Test header toko publik
-│       ├── StoreProductCard.test.jsx   # Test kartu produk toko
-│       ├── useAnalytics.test.jsx       # Test useAnalytics hook
-│       ├── useDebounce.test.js         # Test useDebounce hook
-│       ├── useInstallPrompt.test.js    # Test useInstallPrompt hook
-│       ├── useNetworkStatus.test.js    # Test useNetworkStatus hook
-│       ├── useProducts.test.jsx        # Test useProducts hook
-│       ├── useStore.test.jsx           # Test useStore hook
-│       └── useUpload.test.js           # Test useUpload hook
+│       ├── setup.js                        # Setup Vitest + jsdom
+│       ├── api.test.js                     # Test Axios instance & interceptors
+│       ├── analyticsService.test.js        # Test analytics service
+│       ├── productService.test.js          # Test product service
+│       ├── servicesApi.test.js             # Test services/api.js
+│       ├── storeService.test.js            # Test store service
+│       ├── storage.test.js                 # Test storage helper
+│       ├── App.test.jsx                    # Test App component & routing
+│       ├── App.loading.test.jsx            # Test lazy loading
+│       ├── Dashboard.test.jsx              # Test Dashboard page
+│       ├── Login.test.jsx                  # Test halaman login
+│       ├── Register.test.jsx               # Test halaman register
+│       ├── ProtectedRoute.test.jsx         # Test guard route autentikasi
+│       ├── StorePage.test.jsx              # Test halaman toko publik
+│       ├── NotFound.test.jsx               # Test halaman 404
+│       ├── Fitur.test.jsx                  # Test halaman fitur
+│       ├── Layout.test.jsx                 # Test Layout component
+│       ├── SEO.test.jsx                    # Test SEO component
+│       ├── Alert.test.jsx                  # Test Alert component
+│       ├── ConfirmDialog.test.jsx          # Test dialog konfirmasi
+│       ├── ErrorBoundary.test.jsx          # Test error boundary
+│       ├── Input.test.jsx                  # Test Input component
+│       ├── InstallPrompt.test.jsx          # Test PWA install prompt
+│       ├── Label.test.jsx                  # Test Label component
+│       ├── LazyImage.test.jsx              # Test lazy-load image
+│       ├── Modal.test.jsx                  # Test modal component
+│       ├── OfflineBanner.test.jsx          # Test banner offline
+│       ├── Skeleton.test.jsx               # Test skeleton loading
+│       ├── Toast.test.jsx                  # Test Toast component
+│       ├── ProductCard.test.jsx            # Test kartu produk dashboard
+│       ├── ProductDetailModal.test.jsx     # Test modal detail produk
+│       ├── ProductForm.test.jsx            # Test form produk
+│       ├── StoreHeader.test.jsx            # Test header toko publik
+│       ├── StoreProductCard.test.jsx       # Test kartu produk toko
+│       ├── useAnalytics.test.jsx           # Test useAnalytics hook
+│       ├── useDebounce.test.js             # Test useDebounce hook
+│       ├── useInstallPrompt.test.js        # Test useInstallPrompt hook
+│       ├── useNetworkStatus.test.js        # Test useNetworkStatus hook
+│       ├── useProducts.test.jsx            # Test useProducts hook
+│       ├── useStore.test.jsx               # Test useStore hook
+│       └── useUpload.test.js               # Test useUpload hook
 │
 ├── 📁 postman/
-│   ├── Untung Utuh API.postman_collection.json  # Koleksi 24 request Postman v2.1
-│   └── Untung Utuh — Dev.postman_environment.json # Environment variabel dev
+│   ├── Untung Utuh API.postman_collection.json       # Koleksi 24 request Postman v2.1
+│   └── Untung Utuh — Dev.postman_environment.json    # Environment variabel dev
 │
 └── 📁 docker/
     ├── 📁 mongo/
-    │   └── mongo-init.js           # Inisialisasi user & database MongoDB
+    │   └── mongo-init.js                # Inisialisasi user & database MongoDB
     └── 📁 nginx/
-        └── nginx.conf              # Konfigurasi Nginx reverse proxy
+        └── nginx.conf                   # Konfigurasi Nginx reverse proxy
 ```
 
 ---
