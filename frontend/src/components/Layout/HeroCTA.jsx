@@ -1,44 +1,49 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '../ui/Button';
+import {cta} from '../../data/aboutData';
 
 const HeroCTA = () => {
   return (
-     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary-600 to-primary-800">
-       <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-6">
-         <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-          Coba Fitur Dasar — Gratis 100%
-         </h2>
-         <p className="text-primary-200 text-lg font-light">
-          Tidak perlu kartu kredit. Tidak perlu pasang aplikasi.
-          Toko Anda online dalam hitungan menit.
-         </p>
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="max-w-2xl mx-auto">
+        <div className="relative rounded-3xl bg-gradient-to-br from-emerald-600 to-emerald-800 px-8 py-14 sm:px-16 text-center overflow-hidden shadow-2xl">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/10" />
+          <div className="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-white/5" />
 
-         <Link to="/register">
-           <Button
-            size="lg"
-            className="bg-white text-primary-700 hover:bg-primary-50 shadow-xl text-base px-10 group"
-           >
-             Buat Toko Online Sekarang
-             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-           </Button>
-         </Link>
+          <div className="relative z-10 flex flex-col items-center gap-6">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+                {cta.title}
+              </h2>
+              <p className="text-emerald-100 text-base sm:text-lg font-light max-w-md mx-auto leading-relaxed">
+                {cta.subtitle}
+              </p>
+            </div>
 
-         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full border-t border-white/20 pt-6 mt-2">
-           {[
-             { val: '0%', label: 'Komisi Per Transaksi' },
-             { val: '5 menit', label: 'Waktu setup toko' },
-             { val: '99.9%', label: 'Uptime dijamin' },
-           ].map(({ val, label }) => (
-             <div key={label} className="flex flex-col items-center gap-0.5">
-               <span className="text-2xl font-extrabold text-white">{val}</span>
-               <span className="text-sm text-primary-200">{label}</span>
-             </div>
-           ))}
-         </div>
-       </div>
-     </section>
-   );
+            <Link to={cta.buttonLink}>
+              <Button
+                size="lg"
+                className="text-base px-10 bg-white text-emerald-700 hover:bg-emerald-50 shadow-none font-semibold"
+              >
+                {cta.buttonText}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+
+            <div className="w-full pt-5 border-t border-white/20 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {cta.trustBadges.map((text) => (
+                <div key={text} className="flex items-center justify-center gap-2 text-sm text-emerald-100">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default HeroCTA;
