@@ -1,34 +1,8 @@
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { faqItems } from '../../data/contactData';
 
 const PricingFAQ = () => {
-  const faqs = [
-    {
-      question: "Apa perbedaan utama dengan marketplace seperti Tokopedia atau Shopee?",
-      answer: "Platform marketplace biasanya mengenakan komisi 10-25% dari setiap transaksi, biaya iklan yang terus meningkat, dan memaksa Anda bersaing dengan ribuan penjual lain. Dengan Untung Utuh, Anda memiliki kontrol penuh atas pelanggan sendiri tanpa biaya tersembunyi. Tidak ada algoritma yang menyembunyikan produk Anda, tidak ada biaya promosi wajib, dan Anda tidak perlu bersaing dengan harga murah dari kompetitor di marketplace. Semua data penjualan tetap milik Anda sepenuhnya.",
-    },
-    {
-      question: "Bisa upgrade atau downgrade paket kapan saja?",
-      answer: "Tentu! Anda bisa mengubah paket kapan saja tanpa biaya administrasi tambahan. Jika upgrade, tagihan bulan berikutnya akan disesuaikan dengan paket baru. Jika downgrade, Anda tetap membayar sesuai paket saat ini hingga periode berakhir. Tidak ada kontrak mengikat - Anda bebas memilih dan mengubah paket setiap waktu.",
-    },
-    {
-      question: "Metode pembayaran apa yang tersedia?",
-      answer: "Kami menerima berbagai metode pembayaran yang aman dan terpercaya:\n- Transfer Bank (BCA, Mandiri, BRI, BNI)\n- E-Wallet (GoPay, OVO, DANA, ShopeePay)\n- Kartu Kredit (untuk paket berbayar)\n- Virtual Account\nSemua transaksi diproses oleh pihak ketiga yang terverifikasi. Untuk langganan tahunan, Anda mendapatkan diskon 33% langsung.",
-    },
-    {
-      question: "Bagaimana kebijakan refund jika saya tidak puas?",
-      answer: "Kami memberikan garansi uang kembali 14 hari untuk semua paket berbayar. Jika dalam 14 hari pertama Anda merasa platform tidak sesuai dengan yang dijanjikan, kami akan mengembalikan uang Anda penuh tanpa pertanyaan. Ini adalah komitmen kami terhadap kualitas layanan dan kepercayaan pelanggan.",
-    },
-    {
-      question: "Apakah data saya aman?",
-      answer: "Keamanan data adalah prioritas utama kami. Kami menggunakan:\n- Enkripsi end-to-end untuk semua data\n- SSL certificate untuk koneksi aman\n- Backup otomatis harian\n- Compliance dengan standar keamanan data Indonesia\n- Tidak pernah menjual atau membagikan data pelanggan Anda\nData Anda sepenuhnya milik Anda dan tidak akan pernah dijual ke pihak ketiga.",
-    },
-    {
-      question: "Bisa coba gratis sebelum berlangganan?",
-      answer: "Ya! Paket Gratis tersedia selamanya tanpa kartu kredit. Anda bisa mencoba semua fitur dasar untuk memahami bagaimana platform bekerja. Setelah merasa nyaman, upgrade kapan saja sesuai kebutuhan bisnis Anda. Tidak ada risiko, tidak ada komitmen tersembunyi.",
-    },
-  ];
-
   const [openIndex, setOpenIndex] = React.useState(null);
 
   const handleToggle = (index) => {
@@ -52,7 +26,7 @@ const PricingFAQ = () => {
          </div>
 
          <div className="max-w-4xl mx-auto space-y-4">
-           {faqs.map((faq, index) => (
+           {faqItems.map((faq, index) => (
              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
                <button
                  onClick={() => handleToggle(index)}

@@ -1,9 +1,11 @@
 import React from 'react';
 import { CheckCircle, XCircle, Shield, Zap, TrendingUp, CreditCard } from 'lucide-react';
+import FadeInSection from '../components/ui/FadeInSection';
 import PricingCard from '../components/pricing/PricingCard';
 import PricingFAQ from '../components/pricing/PricingFAQ';
 import TestimonialCard from '../components/pricing/TestimonialCard';
 import HeroCTA from '../components/layout/HeroCTA';
+import { testimonials } from '../data/testimonialsData';
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = React.useState(false);
@@ -100,27 +102,6 @@ const Pricing = () => {
     },
   ];
 
-  const testimonials = [
-     {
-      avatar: 'https://placehold.co/100x100/10b981/ffffff?text=AS',
-      name: 'Andi Saputra',
-      role: 'Owner Toko Elektronik Online',
-      quote: "Dari marketplace pindah ke Untung Utuh, omzet naik 40% dalam 3 bulan. Komisi 0% bikin profit langsung jadi. Paling enak bisa kontrol semua data sendiri tanpa harus bayar iklan terus-terusan.",
-     },
-     {
-      avatar: 'https://placehold.co/100x100/059669/ffffff?text=BK',
-      name: 'Bella Kusuma',
-      role: 'Founder Fashion Store',
-      quote: "Awalnya ragu karena belum pernah pakai platform sendiri. Tapi setelah coba paket Pro, saya kaget betapa mudahnya dan murah banget dibanding bayar komisi 15% di marketplace. Sekarang sudah setahun lebih, sangat puas!",
-     },
-     {
-      avatar: 'https://placehold.co/100x100/047857/ffffff?text=CD',
-      name: 'Citra Dewi',
-      role: 'Manager Kuliner Online',
-      quote: "Sebagai yang pakai paket Premium, saya bisa manage 3 toko sekaligus dengan tim 5 orang. Analytics-nya sangat detail, bisa lihat mana produk yang performanya bagus. Support 24/7 juga responsif banget. Worth it!",
-     },
-   ];
-
   const trustBadges = [
     { icon: <Shield className="w-6 h-6" />, label: 'Pembatalan Kapan Saja', color: 'bg-emerald-100 text-emerald-700' },
     { icon: <CreditCard className="w-6 h-6" />, label: '0% Komisi Selamanya', color: 'bg-emerald-100 text-emerald-700' },
@@ -159,7 +140,8 @@ const Pricing = () => {
           </div>
 
           {/* Toggle Switch */}
-          <div className="flex justify-center items-center gap-4 mb-12">
+          <FadeInSection>
+            <div className="flex justify-center items-center gap-4 mb-12">
             <span className={`text-sm font-semibold transition-colors duration-300 select-none ${
               !isAnnual ? 'text-blue-600' : 'text-gray-400'
             }`}>Bulanan</span>
@@ -188,8 +170,10 @@ const Pricing = () => {
               </span>
             )}
           </div>
+          </FadeInSection>
 
           {/* Pricing Cards */}
+          <FadeInSection delay={150}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
             {packages.map((pkg, index) => (
               <PricingCard
@@ -200,12 +184,14 @@ const Pricing = () => {
               />
             ))}
           </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* Comparison Table Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeInSection>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
              Perbandingan Fitur
@@ -214,7 +200,9 @@ const Pricing = () => {
              Lihat perbedaan detail setiap paket dan pilih yang paling sesuai dengan kebutuhan bisnis Anda.
             </p>
           </div>
+          </FadeInSection>
 
+          <FadeInSection delay={150}>
           <div className="overflow-x-auto rounded-2xl shadow-lg">
             <table className="min-w-full bg-white">
               <thead>
@@ -265,12 +253,14 @@ const Pricing = () => {
               </tbody>
             </table>
           </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeInSection>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
              Apa Kata Mereka?
@@ -279,20 +269,27 @@ const Pricing = () => {
              Ribuan bisnis telah beralih ke Untung Utuh dan mengalami pertumbuhan yang signifikan.
             </p>
           </div>
+          </FadeInSection>
 
+          <FadeInSection delay={150}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {testimonials.map((testimonial, index) => (
+            {testimonials.slice(0, 3).map((testimonial, index) => (
               <TestimonialCard key={index} {...testimonial} />
             ))}
           </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <PricingFAQ />
+      <FadeInSection>
+        <PricingFAQ />
+      </FadeInSection>
 
       {/* CTA Banner */}
-      <HeroCTA />
+      <FadeInSection>
+        <HeroCTA />
+      </FadeInSection>
     </div>
   );
 };

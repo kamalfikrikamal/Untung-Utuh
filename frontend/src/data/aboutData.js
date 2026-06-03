@@ -3,21 +3,6 @@
  * All text, stats, values, and team data are maintained here.
  */
 
-/* ── Hero Section ──────────────────────────────────────── */
-
-export const hero = {
-  badge: 'Sejak 2024',
-  badgeColor: 'bg-emerald-100 text-emerald-700',
-  title: 'Membantu UMKM Indonesia Go Digital',
-  subtitle:
-    'Kami percaya setiap penjual lokal berhak memiliki toko online sendiri — tanpa potongan 8–15% dari marketplace, tanpa biaya tersembunyi, dan dengan kontrol penuh atas data serta pelanggan mereka.',
-  stats: [
-    { label: 'Dipercaya', value: '1,247+', unit: 'UMKM' },
-    { label: 'Total Penghematan', value: 'Rp 2.3M+', unit: 'biaya admin' },
-    { label: 'Kepuasan', value: '99.9%', unit: 'pengguna' },
-  ],
-};
-
 /* ── Cerita Kami ────────────────────────────────────────── */
 
 export const story = {
@@ -63,9 +48,6 @@ export const values = [
   {
     icon: 'ShieldCheck',
     title: 'Transparansi',
-    color: 'text-emerald-600',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
     tagline: '0% komisi per transaksi, biaya flat jelas',
     description:
       'Kami tidak mengambil potongan dari setiap transaksi Anda. Cukup satu biaya langganan yang disebutkan di awal — tanpa biaya tersembunyi, tanpa kenaikan harga diam-diam. Apa yang Anda lihat, itulah yang Anda bayar.',
@@ -73,9 +55,6 @@ export const values = [
   {
     icon: 'Zap',
     title: 'Kemudahan',
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-200',
     tagline: 'Setup <5 menit, tanpa teknis rumit',
     description:
       'Cukup daftar, upload produk, dan toko Anda langsung online. Tidak perlu mengurus hosting, domain, atau coding. Semua sudah kami siapkan agar Anda bisa langsung fokus berjualan.',
@@ -83,9 +62,6 @@ export const values = [
   {
     icon: 'Users',
     title: 'Keberpihakan',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
     tagline: '100% fokus pada kebutuhan UMKM, bukan investor',
     description:
       'Setiap fitur yang kami buat didasarkan pada kebutuhan nyata UMKM, bukan tekanan investor atau target pertumbuhan. Data Anda milik Anda, dan pelanggan Anda adalah pelanggan Anda sepenuhnya.',
@@ -93,9 +69,6 @@ export const values = [
   {
     icon: 'Lightbulb',
     title: 'Inovasi',
-    color: 'text-violet-600',
-    bgColor: 'bg-violet-50',
-    borderColor: 'border-violet-200',
     tagline: 'Teknologi terbaru, PWA, AI-ready',
     description:
       'Kami menggunakan teknologi web modern (React 19, PWA, Tailwind CSS) untuk memastikan toko online Anda cepat, dapat diakses offline, dan siap mengadopsi kecerdasan buatan di masa depan — tanpa perlu upgrade mahal.',
